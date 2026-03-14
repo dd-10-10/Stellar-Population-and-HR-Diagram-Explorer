@@ -1,5 +1,8 @@
 # Stellar Population and HR Diagram Explorer
-A program for generating and exploring Hertzsprung-Russell diagrams from astronomical data.
+A program for generating and exploring Hertzsprung-Russell (HR) diagrams from astronomical data.
+
+## Hertzsprung-Russell diagrams
+HR diagrams are scatter plots of stellar data, with the y-axis usually showing increasing luminosity and the x-axis showing colour, spectral class, or decreasing surface temperature. These plots (initially independently formulated by by Hertzsprung and Russell) helped astronomers gain a better understanding of stellar evolution.
 
 ## Data Sources and Cleaning
 
