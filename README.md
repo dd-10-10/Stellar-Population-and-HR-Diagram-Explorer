@@ -11,7 +11,7 @@ One is called Near_Earth.csv for stars near Earth and the other one is Far_Earth
 We will be updating the readme for the project as it goes on
 
 # Data Filtering
-The raw data undergoes several quality cuts to ensure physical accuracy and reduce observational noise. Key filtering steps include ensuring positive distance measurements (parallax > 0)(we have parallax filtered in Near_Earth.csv), enforcing brightness limits to maintain data quality (phot_g_mean_mag < 17), and removing entries with missing color indices (bp_rp).
+To ensure physical accuracy and minimize observational noise, we will use quality cuts like enforcing brightness limits (phot_g_mean_mag < 17) and removing missing color indices, complementing the dataset's existing parallax filters. When we expand datasets to include metrics like luminosity or effective temperature, then we will use astrophysical cuts. These filters will restrict temperature, luminosity, standard spectral classes, and color indices strictly to realistic physical bounds.
 
 # Plots
 The plotly python library can be used to make interactive plots, which is how the HR diagrams will be created here.
