@@ -16,9 +16,7 @@ We will be updating the readme for the project as it goes on.
 To ensure physical accuracy and minimize observational noise, we will use quality cuts like enforcing brightness limits (phot_g_mean_mag < 17) and removing missing color indices, complementing the dataset's existing parallax filters. When we expand datasets to include metrics like luminosity or effective temperature, then we will use astrophysical cuts. These filters will restrict temperature, luminosity, standard spectral classes, and color indices strictly to realistic physical bounds.
 
 ## Data Analysis
-Isochrone fitting can be used to estimate stellar ages, masses, and metallicities, while main-sequence turnoff identification helps determine the age of stellar populations.
-
-Population classification separates stars into categories such as main sequence, giants, and white dwarfs, and density or clustering analysis identifies substructures and distinct stellar populations. Outlier detection highlights unusual stars, including binaries or blue stragglers, and population synthesis or modeling can be applied to infer the star formation history and initial mass function. 
+Isochrone fitting can be used to estimate stellar ages, masses, and metallicities, while main-sequence turnoff identification helps determine the age of stellar populations. 
 
 HR diagrams can also be used together with how stars move and their chemical composition to study the structure of the Galaxy, see how stars change as they age, and look at differences in their metallicity. 
 Based on the parameters chosen different analysis method may be used.
