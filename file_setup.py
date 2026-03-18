@@ -3,8 +3,7 @@ import pandas as pd
 
 def new_names(df):
     n_dict = {"phot_g_mean_mag" : "Apparent G magnitude",
-             "phot_bp_mean_mag" : "Blue photometer magnitude",
-             "phot_rp_mean_mag" : "Red photometer magnitude",
+             "bp_rp" : "Color index",
              "parallax" : "Parallax",
              "parallax_error" : "Parallax error",
              "parallax_over_error" : "Parallax over error",
@@ -17,15 +16,9 @@ def distance(df):
     d = 1000/df["Parallax"]
     return d
 
-def color(df):
-    color = df["Blue photometer magnitude"] - df["Red photometer magnitude"]
-    return color
-
 def abs_vis_mag(df):
-    g, p = df["Apparent G magnitude"], df["Parallax"]
-    bp, rp = df["Blue photometer magnitude"], df["Red photometer magnitude"]
-    g_ext = df["Extinction in G band"]
-    v = g + 0.0176 + 0.00686 * (color(df)) + 0.1732 * (color(df)**2)
+    g, g_ext, p = df["Apparent G magnitude"], df["Extinction in G band"], df["Parallax"] 
+    v = g + 0.0176 + 0.00686 * df["Color index"] + 0.1732 * ((df["Color index"])**2)
     mv= v - (1.1 * g_ext) + (5 * np.log10(p)) - 10
     return mv
 
@@ -58,11 +51,10 @@ def spec(df):
     return df.apply(spectral_class, axis = 1)
 
 if __name__ == "__main__":
-    df1 = pd.read_csv("Near_earth_50k.csv")
+    df1 = pd.read_csv("near_100k.csv")
     df1.dropna(axis = 0, inplace = True)
     new_names(df1)
     df1["Distance"] = distance(df1)
-    df1["Color index"] = color(df1)
     df1["Absolute visual magnitude"] = abs_vis_mag(df1)
     df1["Absolute magnitude"] = abs_mag(df1)
     df1["Log luminosity"] = log_lum(df1)
@@ -70,18 +62,17 @@ if __name__ == "__main__":
     df1["Log surface gravity"] = np.log10(df1["Surface gravity"])
     df1["Spectral class"] = spec(df1)
 
-    df1.to_csv("near_earth_50k_clean_calc.csv", index= False)
+    df1.to_csv("near_100k_clean_calc.csv", index= False)
 
-    df2 = pd.read_csv("Far_earth_50k.csv")
+    df2 = pd.read_csv("far_100k.csv")
     df2.dropna(axis = 0, inplace = True)
     new_names(df2)
     df2= df2[df2["Parallax"] > 0]
     df2["Distance"] = distance(df2)
-    df2["Color index"] = color(df2)
     df2["Absolute visual magnitude"] = abs_vis_mag(df2)
     df2["Absolute magnitude"] = abs_mag(df2)
     df2["Log luminosity"] = log_lum(df2)
     df2["Log effective temperature"] = np.log10(df2["Effective temperature"])
     df2["Log surface gravity"] = np.log10(df2["Surface gravity"])
     df2["Spectral class"] = spec(df2)
-    df2.to_csv("far_earth_50k_clean_calc.csv", index= False)
+    df2.to_csv("far_100k_clean_calc.csv", index= False)
