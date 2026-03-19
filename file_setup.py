@@ -20,6 +20,7 @@ def new_names(df):
 def quality_cuts(df):
     # Parallax cut: Must be positive to avoid math errors
     df = df[df["Parallax"] > 0]
+    df = df[df["Parallax over error"] > 20]
     # Dimness cut: Removes stars too faint for reliable sensors (till 6 are visible by naked eye)
     df = df[df["Apparent G magnitude"] < 17] 
     # Physical Color Bounds: Restricts color index to valid glowing plasma
