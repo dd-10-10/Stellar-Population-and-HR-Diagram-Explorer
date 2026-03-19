@@ -18,23 +18,16 @@ def new_names(df):
     df.rename(columns = n_dict, inplace = True)
 
 def quality_cuts(df):
-    # 1. Parallax cut: Must be positive to avoid math errors
+    # Parallax cut: Must be positive to avoid math errors
     df = df[df["Parallax"] > 0]
-    # 2. Dimness cut: Removes stars too faint for reliable sensors (till 6 are visible by naked eye)
+    # Dimness cut: Removes stars too faint for reliable sensors (till 6 are visible by naked eye)
     df = df[df["Apparent G magnitude"] < 17] 
-    # 3. Physical Color Bounds: Restricts color index to valid glowing plasma
+    # Physical Color Bounds: Restricts color index to valid glowing plasma
     df = df[(df["Color index"] >= -0.5) & (df["Color index"] <= 5.5)]
-    # 4. Strict Parallax cut: Keeps only highly accurate distance measurements
-    if "Parallax error" in df.columns:
-        df = df[(df["Parallax"] / df["Parallax error"]) > 20]
-    # 5. Temperature cut: Keeps surface temperatures within realistic physical limits
+    # Temperature cut: Keeps surface temperatures within realistic physical limits
     if "Effective temperature" in df.columns:
         df = df[(df["Effective temperature"] >= 2000) & (df["Effective temperature"] <= 50000)]
-    # 6. Spectral Class cut: Ensures stars belong to standard Main Sequence categories
-    if "Spectral class" in df.columns:
-        valid_classes = ['O', 'B', 'A', 'F', 'G', 'K', 'M']
-        df = df[df["Spectral class"].isin(valid_classes)]
-        
+    
     return df
 
 def distance(df):
@@ -100,7 +93,6 @@ if __name__ == "__main__":
     #Creating one combined dataframe
     df1 = pd.read_csv("data/near_100k.csv")
     df2 = pd.read_csv("data/far_100k.csv")
-    df2= df2[df2["parallax"] > 0]
     df= pd.concat((df1, df2))
 
     #Calculating and adding new columns
@@ -116,8 +108,8 @@ if __name__ == "__main__":
     df["Log surface gravity"] = np.log10(df["Surface gravity"])
     df["Spectral class"] = spec(df)
 
-    # Post calculations Quality filters
+    # Post calculations Quality filters   
+    df = df[df["Extinction in G band"] >= 0]
     df = df[(df["Log luminosity"] >= -6) & (df["Log luminosity"] <= 6)]
-
     #Saving
     df.to_csv("data/stars_clean_calc.csv", index= False)
