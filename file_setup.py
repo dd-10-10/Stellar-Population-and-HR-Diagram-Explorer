@@ -78,8 +78,8 @@ def spec(df):
 if __name__ == "__main__":
     
     #Creating one combined dataframe
-    df1 = pd.read_csv("near_100k.csv")
-    df2 = pd.read_csv("far_100k.csv")
+    df1 = pd.read_csv("data/near_100k.csv")
+    df2 = pd.read_csv("data/far_100k.csv")
     df2= df2[df2["parallax"] > 0]
     df= pd.concat((df1, df2))
 
@@ -97,4 +97,4 @@ if __name__ == "__main__":
     #Quality filters
 
     #Saving
-    df.to_csv("stars_clean_calc.csv", index= False)
+    df.to_csv("data/stars_clean_calc.csv", index= False)

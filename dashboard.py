@@ -41,5 +41,5 @@ def dashboard(df):
 
 #Execution
 if __name__== "__main__":
-    df = pd.read_csv("stars_clean_calc.csv")
+    df = pd.read_csv("data/stars_clean_calc.csv")
     dashboard(df)
