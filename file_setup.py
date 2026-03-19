@@ -112,10 +112,12 @@ if __name__ == "__main__":
     df["Absolute magnitude"] = abs_mag(df)
     df["Log luminosity"] = log_lum(df)
     df["Log effective temperature"] = np.log10(df["Effective temperature"])
+    # No need to take log of surface gravity as it is already log of surface gravity when downloaded from Gaia and it is already in range from 0 to 9. 
     df["Log surface gravity"] = np.log10(df["Surface gravity"])
     df["Spectral class"] = spec(df)
 
-    #Quality filters
+    # Post calculations Quality filters
+    df = df[(df["Log luminosity"] >= -6) & (df["Log luminosity"] <= 6)]
 
     #Saving
     df.to_csv("data/stars_clean_calc.csv", index= False)
