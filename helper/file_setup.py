@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-#---- Calculations and other functions; see bottom for actual setup, cleaning, and filtering ----
+#---- Calculations and other functions ----
 
 def new_names(df):
     '''
