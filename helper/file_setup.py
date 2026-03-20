@@ -17,20 +17,6 @@ def new_names(df):
              "logg_gspphot" : "Surface gravity"}
     df.rename(columns = n_dict, inplace = True)
 
-def quality_cuts(df):
-    # Parallax cut: Must be positive to avoid math errors
-    df = df[df["Parallax"] > 0]
-    df = df[df["Parallax over error"] > 20]
-    # Dimness cut: Removes stars too faint for reliable sensors (till 6 are visible by naked eye)
-    df = df[df["Apparent G magnitude"] < 17] 
-    # Physical Color Bounds: Restricts color index to valid glowing plasma
-    df = df[(df["Color index"] >= -0.5) & (df["Color index"] <= 5.5)]
-    # Temperature cut: Keeps surface temperatures within realistic physical limits
-    if "Effective temperature" in df.columns:
-        df = df[(df["Effective temperature"] >= 2000) & (df["Effective temperature"] <= 50000)]
-    
-    return df
-
 def distance(df):
     '''
     Function to calculate distance from parallax
@@ -99,18 +85,12 @@ if __name__ == "__main__":
     #Calculating and adding new columns
     df.dropna(axis = 0, inplace = True)
     new_names(df)
-    df = quality_cuts(df)
     df["Distance"] = distance(df)
     df["Absolute visual magnitude"] = abs_vis_mag(df)
     df["Absolute magnitude"] = abs_mag(df)
     df["Log luminosity"] = log_lum(df)
     df["Log effective temperature"] = np.log10(df["Effective temperature"])
-    # No need to take log of surface gravity as it is already log of surface gravity when downloaded from Gaia and it is already in range from 0 to 9. 
-    df["Log surface gravity"] = np.log10(df["Surface gravity"])
     df["Spectral class"] = spec(df)
 
-    # Post calculations Quality filters   
-    df = df[df["Extinction in G band"] >= 0]
-    df = df[(df["Log luminosity"] >= -6) & (df["Log luminosity"] <= 6)]
     #Saving
     df.to_csv("data/stars_clean_calc.csv", index= False)
