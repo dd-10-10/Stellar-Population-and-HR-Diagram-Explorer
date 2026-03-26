@@ -15,5 +15,17 @@ def hard_filters(df):
     # Post calculations Quality filters   
     df = df[df["Extinction in G band"] >= 0]
     df = df[(df["Log luminosity"] >= -6) & (df["Log luminosity"] <= 6)]
+
+    # Statistical filters (IQR method to remove telescope sensor noise)
+    if "Parallax error" in df.columns:
+        Q1 = df["Parallax error"].quantile(0.25)
+        Q3 = df["Parallax error"].quantile(0.75)
+        IQR = Q3 - Q1
+        upper_bound = Q3 + 1.5 * IQR
+        # Keep only the rows where the error is within the "normal" boundary
+        df = df[df["Parallax error"] <= upper_bound]
+    """
+    More error columns are needed like phot_g_mean_mag_error , bp_rp_error , teff_gspphot_error , to apply stat filters
+    """
     
     return df
