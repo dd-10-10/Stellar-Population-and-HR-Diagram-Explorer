@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-from helper.filters import hard_filters
+from helper.filters import *
 
 def dashboard(df):
     '''
@@ -15,7 +15,9 @@ def dashboard(df):
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
 
     # Filters
-    df= hard_filters(df)
+    df= clean_measured(df)
+    #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+    df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
 
     # Selecting data based on distance from Earth
     # TODO: Make it possible to manually input numbers
@@ -28,7 +30,7 @@ def dashboard(df):
         justify-content: center;
     }
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
     diag_tab, data_tab= st.tabs(["Diagram", "Summary Statistics"], key= "tabs")
 
     # HR Diagram
