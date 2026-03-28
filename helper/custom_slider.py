@@ -20,7 +20,7 @@ def link_nums(min_key, max_key, sl_key):
     '''
     st.session_state[min_key], st.session_state[max_key]= st.session_state[sl_key]
 
-def num_slider(label, min_val, max_val, sl_key, default= None):
+def num_slider(label, min_val, max_val, step, sl_key, default= None):
     '''
     A custom slider that allows a user to select a range via both the actual slider and associated numerical fields.
     '''
@@ -41,11 +41,11 @@ def num_slider(label, min_val, max_val, sl_key, default= None):
     # Numerical fields
     min_col, max_col= st.columns(2)
     with min_col:
-        st.number_input("Lower bound:", min_value= min_val, max_value= max_val, key= min_key,
-                        on_change= link_slider, args=(min_key, max_key, sl_key))
+        st.number_input("Lower bound:", min_value= min_val, max_value= max_val, step= float(step),
+                        key= min_key, on_change= link_slider, args=(min_key, max_key, sl_key))
     with max_col:
-        st.number_input("Upper bound:", min_value= min_val, max_value= max_val, key= max_key,
-                        on_change= link_slider, args=(min_key, max_key, sl_key))
+        st.number_input("Upper bound:", min_value= min_val, max_value= max_val, step= float(step),
+                        key= max_key, on_change= link_slider, args=(min_key, max_key, sl_key))
     
     # Slider
     vals= st.slider(label= label, min_value= min_val, max_value= max_val,

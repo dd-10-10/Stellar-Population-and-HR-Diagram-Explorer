@@ -21,7 +21,8 @@ def dashboard(df):
     with filter_col:
         # Filtering data in various ways
 
-        vals= num_slider("Select range of distance from Earth:", df["Distance"].min(), df["Distance"].max(), "dist_sl")
+        vals= num_slider(label= "Select range of distance from Earth:", min_val= df["Distance"].min(), max_val= df["Distance"].max(),
+                         step= 10, sl_key= "dist_sl")
         df= df[(df["Distance"]>= vals[0]) & (df["Distance"]<= vals[1])]
         
 
