@@ -10,7 +10,7 @@ def dashboard(df):
     '''
     Function to generate the diagram and dashboard from data
     '''
-
+    st.markdown("""<style>.block-container {padding-top: 2rem !important;}</style>""",unsafe_allow_html=True)
     st.set_page_config(layout="wide")
 
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
@@ -19,27 +19,50 @@ def dashboard(df):
     filter_col, out_col= st.columns(2, gap= "medium")
 
     with filter_col:
-        # Filtering data in various ways
-
-        vals= num_slider(label= "Select range of distance from Earth:", min_val= df["Distance"].min(), max_val= df["Distance"].max(),
-                         step= 10, sl_key= "dist_sl")
-        df= df[(df["Distance"]>= vals[0]) & (df["Distance"]<= vals[1])]
+        st.subheader("Data filters")
         
-
-        # Filters
-        #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
-        df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
-
+        with st.container(height=600):
+            dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df["Distance"].min(), max_val= df["Distance"].max(),
+                                step= step_size(df["Distance"].min(), df["Distance"].max()), sl_key= "dist_sl")
+            df= df[(df["Distance"]>= dist_vals[0]) & (df["Distance"]<= dist_vals[1])]
+            
+            spec_vals= st.multiselect(label= "Spectral classes", options= ["M", "K", "G", "F", "A", "B", "O"],
+                                    default= ["M", "K", "G", "F", "A", "B", "O"], key= "spec_vals")
+            df= df[df["Spectral class"].isin(spec_vals)]
+            
+            gmag_vals= num_slider(label= "Apparent G magnitude", min_val= df["Apparent G magnitude"].min(), max_val= df["Apparent G magnitude"].max(),
+                                step= step_size(df["Apparent G magnitude"].min(), df["Apparent G magnitude"].max()), sl_key= "gmag_sl")
+            df= df[(df["Apparent G magnitude"]>= gmag_vals[0]) & (df["Apparent G magnitude"]<= gmag_vals[1])]
+            # TODO: Show only one or the other, based on which one is the currently selected axis
+            clr_vals= num_slider(label= "Color index", min_val= df["Color index"].min(), max_val= df["Color index"].max(),
+                                step= step_size(df["Color index"].min(), df["Color index"].max()), sl_key= "clr_sl")
+            df= df[(df["Color index"]>= clr_vals[0]) & (df["Color index"]<= clr_vals[1])]
+            
+            temp_vals= num_slider(label= "Effective temperature", min_val= df["Effective temperature"].min(), max_val= df["Effective temperature"].max(),
+                                step= step_size(df["Effective temperature"].min(), df["Effective temperature"].max()), sl_key= "temp_sl")
+            df= df[(df["Effective temperature"]>= temp_vals[0]) & (df["Effective temperature"]<= temp_vals[1])]
+            #----------
+            
+            grav_vals= num_slider(label= "Surface gravity", min_val= df["Surface gravity"].min(), max_val= df["Surface gravity"].max(),
+                                step= step_size(df["Surface gravity"].min(), df["Surface gravity"].max()), sl_key= "grav_sl")
+            df= df[(df["Surface gravity"]>= grav_vals[0]) & (df["Surface gravity"]<= grav_vals[1])]
+            # TODO: Show only one or the other, based on which one is the currently selected axis
+            abs_vals= num_slider(label= "Absolute magnitude", min_val= df["Absolute magnitude"].min(), max_val= df["Absolute magnitude"].max(),
+                                step= step_size(df["Absolute magnitude"].min(), df["Absolute magnitude"].max()), sl_key= "abs_sl")
+            df= df[(df["Absolute magnitude"]>= abs_vals[0]) & (df["Absolute magnitude"]<= abs_vals[1])]
+            
+            lum_vals= num_slider(label= "Luminosity (log)", min_val= df["Log luminosity"].min(), max_val= df["Log luminosity"].max(),
+                                step= step_size(df["Log luminosity"].min(), df["Log luminosity"].max()), sl_key= "lum_sl")
+            df= df[(df["Log luminosity"]>= lum_vals[0]) & (df["Log luminosity"]<= lum_vals[1])]
+            #----------
+            # Filters
+            #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+            #df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+        
     with out_col:
         # Tabs
-        st.markdown("""
-        <style>
-        .stTabs [data-baseweb="tab-list"] {
-            justify-content: center;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        diag_tab, data_tab= st.tabs(["Diagram", "Summary Statistics"], key= "tabs")
+        st.markdown("""<style>.stTabs [data-baseweb="tab-list"] {justify-content: center;}</style>""", unsafe_allow_html=True)
+        diag_tab, data_tab= st.tabs(["Diagram", "Summary Statistics"], key= "out_tabs")
 
         # HR Diagram
         with diag_tab:
@@ -55,7 +78,7 @@ def dashboard(df):
             clr_scl= st.selectbox("Colour scheme:", ["Blues", "Greys", "Plasma", "RdYlBu", "Reds"], index= 3)
 
             # Plotting the data
-            fig= px.scatter(df[(df["Distance"]>= vals[0]) & (df["Distance"]<= vals[1])], x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
+            fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
             fig.update_traces(marker={'size': 1})
             
             if y_ax== "Absolute magnitude":

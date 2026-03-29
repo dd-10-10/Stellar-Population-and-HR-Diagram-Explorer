@@ -1,4 +1,13 @@
+import numpy as np
 import streamlit as st
+
+def step_size(min_val, max_val):
+    '''
+    Function to adaptively determine step size for numerical input controls
+    '''
+    x= np.log10(max_val- min_val)
+    y= np.floor(x)- 2
+    return 10**y
 
 def link_slider(min_key, max_key, sl_key):
     '''
