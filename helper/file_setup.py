@@ -82,7 +82,7 @@ if __name__ == "__main__":
     df1 = pd.read_csv("data/Corrected_near_earth_50K.csv")
     df2 = pd.read_csv("data/corrected_far_earth_100k.csv")
     df= pd.concat((df1, df2))
-
+    
     #Calculating and adding new columns
     df.dropna(axis = 0, inplace = True)
     new_names(df)
