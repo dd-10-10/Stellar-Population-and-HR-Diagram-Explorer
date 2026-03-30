@@ -3,8 +3,8 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-from helper.filters import *
-from helper.custom_slider import *
+from  ..helper.filters import *
+from  ..helper.custom_slider import *
 
 def dashboard(df):
     '''
