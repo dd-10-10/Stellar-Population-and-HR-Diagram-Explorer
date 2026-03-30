@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from filters import clean_measured
 
 #---- Calculations and other functions ----
 
@@ -78,8 +79,8 @@ def spec(df):
 if __name__ == "__main__":
     
     #Creating one combined dataframe
-    df1 = pd.read_csv("data/near_100k.csv")
-    df2 = pd.read_csv("data/far_100k.csv")
+    df1 = pd.read_csv("data/Corrected_near_earth_50K.csv")
+    df2 = pd.read_csv("data/corrected_far_earth_100k.csv")
     df= pd.concat((df1, df2))
 
     #Calculating and adding new columns
@@ -91,6 +92,7 @@ if __name__ == "__main__":
     df["Log luminosity"] = log_lum(df)
     df["Log effective temperature"] = np.log10(df["Effective temperature"])
     df["Spectral class"] = spec(df)
+    df= clean_measured(df)
 
     #Saving
-    df.to_csv("data/stars_clean_calc.csv", index= False)
+    df.to_csv("data/corrected_stars_clean_calc.csv", index= False)
