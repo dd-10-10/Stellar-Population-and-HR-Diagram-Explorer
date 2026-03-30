@@ -79,8 +79,8 @@ def spec(df):
 if __name__ == "__main__":
     
     #Creating one combined dataframe
-    df1 = pd.read_csv("data/Corrected_near_earth_50K.csv")
-    df2 = pd.read_csv("data/corrected_far_earth_100k.csv")
+    df1 = pd.read_csv("data/gaia_near_earth.csv")
+    df2 = pd.read_csv("data/gaia_far_earth.csv")
     df= pd.concat((df1, df2))
     
     #Calculating and adding new columns
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     df= clean_measured(df)
 
     #Saving
-    df.to_csv("data/corrected_stars_clean_calc.csv", index= False)
+    df.to_csv("/Users/sujaiy/Documents/Project_Folder/Stellar-Population-and-HR-Diagram-Explorer/data/gaia_cleaned.csv", index= False)
