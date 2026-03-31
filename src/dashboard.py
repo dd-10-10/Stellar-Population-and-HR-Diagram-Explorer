@@ -16,6 +16,8 @@ def dashboard(df, iso_df, iso_df2):
 
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
 
+    st.sidebar.markdown("# Diagram Explorer 🎈")
+
     df= clean_measured(df)
     df_old= df.copy()
     #----Data for plotting Main sequence----
@@ -36,7 +38,7 @@ def dashboard(df, iso_df, iso_df2):
                          "Log luminosity": np.linspace(-1.0, -4.0, 100)})
     #--------
 
-    filter_col, out_col= st.columns(2, gap= "medium")
+    filter_col, out_col= st.columns([0.4, 0.6], gap= "medium")
 
     with filter_col:
         st.subheader("Data filters")

@@ -2,8 +2,8 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 
-st.markdown("# Page 2 ❄️")
-st.sidebar.markdown("# Page 2 ❄️")
+st.markdown("# Statistical Perspectives ❄️")
+st.sidebar.markdown("# Statistical Perspectives ❄️")
 
 # 1. Load Data
 @st.cache_data
