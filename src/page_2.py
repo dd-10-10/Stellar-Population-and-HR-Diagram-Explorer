@@ -11,19 +11,6 @@ def load_data():
     df = pd.read_csv("data/gaia_cleaned.csv")
     return df
 
-#This part is not required!!!
-if False:
-    def data_load():
-        df = pd.read_csv("data/gaia_cleaned.csv")
-        df = df[df['Parallax'] > 0].copy()
-        df['Distance_pc'] = 1000 / df['Parallax']
-        
-        # Create Spectral Class
-        bins = [0, 3700, 5200, 6000, 7500, 10000, 30000, float('inf')] 
-        labels = ['M', 'K', 'G', 'F', 'A', 'B', 'O'] 
-        df['Spectral_Class'] = pd.cut(df['Effective temperature'], bins=bins, labels=labels)
-        
-        return df.dropna(subset=['Spectral_Class'])
 
 df= load_data()
 
