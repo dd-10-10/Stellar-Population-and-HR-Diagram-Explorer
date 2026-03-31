@@ -40,7 +40,6 @@ def del_outliers(df, names):
             Q3 = df[name].quantile(0.75)
             IQR = Q3 - Q1
             upper_bound = Q3 + 1.5 * IQR
-            lower_bound= Q1 - 1.5 * IQR
-            df_clean = df_clean[(df_clean[name] <= upper_bound) & (df_clean[name] >= lower_bound)]
+            df_clean = df_clean[(df_clean[name] <= upper_bound)]
     return df_clean
 
