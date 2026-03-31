@@ -7,41 +7,47 @@ st.sidebar.markdown("# Page 2 ❄️")
 
 # 1. Load Data
 @st.cache_data
-def data_load():
-    df = pd.read_csv("../data/gaia_cleaned.csv")
-    df = df[df['Parallax'] > 0].copy()
-    df['Distance_pc'] = 1000 / df['Parallax']
-    
-    # Create Spectral Class
-    bins = [0, 3700, 5200, 6000, 7500, 10000, 30000, float('inf')] 
-    labels = ['M', 'K', 'G', 'F', 'A', 'B', 'O'] 
-    df['Spectral_Class'] = pd.cut(df['Effective temperature'], bins=bins, labels=labels)
-    
-    return df.dropna(subset=['Spectral_Class'])
+def load_data():
+    df = pd.read_csv("data/gaia_cleaned.csv")
+    return df
 
-df = data_load()
+#This part is not required!!!
+if False:
+    def data_load():
+        df = pd.read_csv("data/gaia_cleaned.csv")
+        df = df[df['Parallax'] > 0].copy()
+        df['Distance_pc'] = 1000 / df['Parallax']
+        
+        # Create Spectral Class
+        bins = [0, 3700, 5200, 6000, 7500, 10000, 30000, float('inf')] 
+        labels = ['M', 'K', 'G', 'F', 'A', 'B', 'O'] 
+        df['Spectral_Class'] = pd.cut(df['Effective temperature'], bins=bins, labels=labels)
+        
+        return df.dropna(subset=['Spectral_Class'])
+
+df= load_data()
 
 scientific_star_colors = {
     'M': '#FF4500', 'K': '#FFA500', 'G': '#FFD700', 'F': '#FFF4EA', 
     'A': '#F2F2F2', 'B': '#CCDDFF', 'O': '#9BB0FF'
 }
 
-# 2. HELPER FUNCTION: This makes your code 10x neater
+# 2. Function to draw chart
 def draw_spectral_chart(filtered_data, chart_title):
     if filtered_data.empty:
         st.warning("No stars found in this range. Try adjusting the slider.")
         return
 
-    plot_variables = filtered_data['Spectral_Class'].value_counts(normalize=True).reset_index()
-    plot_variables.columns = ["Spectral_Class", "Percentage"]
+    plot_variables = filtered_data['Spectral class'].value_counts(normalize=True).reset_index()
+    plot_variables.columns = ["Spectral class", "Percentage"]
     plot_variables["Percentage"] *= 100
 
     fig = px.bar(
         plot_variables,
-        x="Spectral_Class",
+        x="Spectral class",
         y="Percentage",
         title=chart_title,
-        color='Spectral_Class',
+        color='Spectral class',
         color_discrete_map=scientific_star_colors,
         text=plot_variables['Percentage'].apply(lambda x: f'{x:.2f}%')
     )
@@ -50,29 +56,29 @@ def draw_spectral_chart(filtered_data, chart_title):
     fig.update_layout(yaxis_title="Percentage of Sample (%)")
     fig.update_yaxes(range=[0, plot_variables['Percentage'].max() * 1.15])
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 # 3. UI and Logic Flow
-options = st.selectbox("Select data of preference", ("Near", "Far"), index=None)
+options = st.selectbox("Select dataset", ("Near", "Far"), index=None)
 
 # Reacting to the selectbox cleanly:
 if options is None:
-    # What to show when the page first loads
+    # Textbox on first loading
     st.info("👆 Please select 'Near' or 'Far' from the dropdown to begin.")
 
 elif options == "Near":
     # Slider and logic for NEAR stars
     distance = st.slider("Select maximum distance (pc)", 0.0, 100.0, 10.0)
-    filter_df = df[df['Distance_pc'] <= distance]
+    filter_df = df[df['Distance'] <= distance]
     
-    # Call the helper function instead of writing 10 lines of chart code
+    # Chart
     draw_spectral_chart(filter_df, f"Near Sample (< {distance} pc)")
 
 elif options == "Far":
     # Slider and logic for FAR stars
-    distance = st.slider("Select minimum distance (pc)", 100.0, 5000.0, 500.0)
-    filter_df = df[df['Distance_pc'] >= distance]
+    distance = st.slider("Select minimum distance (pc)", 100.0, df['Distance'].max(), 500.0)
+    filter_df = df[df['Distance'] >= distance]
     
-    # Call the exact same helper function!
+    # Chart
     draw_spectral_chart(filter_df, f"Far Sample (> {distance} pc)")

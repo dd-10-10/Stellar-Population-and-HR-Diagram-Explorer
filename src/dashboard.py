@@ -3,8 +3,8 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-from  ..helper.filters import *
-from  ..helper.custom_slider import *
+from  helper.filters import *
+from  helper.custom_slider import *
 
 def dashboard(df):
     '''
@@ -21,7 +21,8 @@ def dashboard(df):
     with filter_col:
         st.subheader("Data filters")
         
-        with st.container(height=600):
+        subcont= st.container(height=600)
+        with subcont:
             dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df["Distance"].min(), max_val= df["Distance"].max(),
                                 step= step_size(df["Distance"].min(), df["Distance"].max()), sl_key= "dist_sl")
             df= df[(df["Distance"]>= dist_vals[0]) & (df["Distance"]<= dist_vals[1])]
@@ -59,40 +60,37 @@ def dashboard(df):
             #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
             #df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
         
+    # HR Diagram
     with out_col:
-        # Tabs
-        st.markdown("""<style>.stTabs [data-baseweb="tab-list"] {justify-content: center;}</style>""", unsafe_allow_html=True)
-        diag_tab, data_tab= st.tabs(["Diagram", "Summary Statistics"], key= "out_tabs")
+        st.subheader("HR Diagram")
 
-        # HR Diagram
-        with diag_tab:
-            # Axis selection
-            xcol, ycol= st.columns(2)
-            with xcol:
-                x_ax= st.selectbox("X-axis:", ["Color index", "Log effective temperature"])
-            with ycol:
-                y_ax= st.selectbox("Y-axis:", ["Absolute magnitude", "Log luminosity"])
+        # Axis selection
+        xcol, ycol= st.columns(2)
+        with xcol:
+            x_ax= st.selectbox("X-axis:", ["Color index", "Log effective temperature"])
+        with ycol:
+            y_ax= st.selectbox("Y-axis:", ["Absolute magnitude", "Log luminosity"])
 
-            # Color
-            clr_ax= "Color index"
-            clr_scl= st.selectbox("Colour scheme:", ["Blues", "Greys", "Plasma", "RdYlBu", "Reds"], index= 3)
+        # Color
+        clr_ax= "Color index"
+        clr_scl= st.selectbox("Colour scheme:", ["Blues", "Greys", "Plasma", "RdYlBu", "Reds"], index= 3)
 
-            # Plotting the data
-            fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
-            fig.update_traces(marker={'size': 1})
+        # Plotting the data
+        fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
+        fig.update_traces(marker={'size': 1})
             
-            if y_ax== "Absolute magnitude":
-                fig.update_yaxes(range= [15, -10])
-            else:
-                fig.update_yaxes(range= [-5, 6])
-            
-            if x_ax== "Color index":
-                fig.update_xaxes(range= [-0.5, 2])
-            elif x_ax== "Log effective temperature":
-                fig.update_xaxes(range= [np.log10(30000), np.log10(1000)])
+        if y_ax== "Absolute magnitude":
+            fig.update_yaxes(range= [16, -10])
+        else:
+            fig.update_yaxes(range= [-6, 6])
+        
+        if x_ax== "Color index":
+            fig.update_xaxes(range= [-0.5, 5])
+        elif x_ax== "Log effective temperature":
+            fig.update_xaxes(range= [np.log10(30000), np.log10(1000)])
 
-            # Displaying the plot
-            st.write(fig)
+        # Displaying the plot
+        st.write(fig)
 
 # Execution
 if __name__== "__main__":
