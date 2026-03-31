@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 
 from  helper.filters import *
 from  helper.custom_slider import *
 
-def dashboard(df):
+def dashboard(df, iso_df, iso_df2):
     '''
     Function to generate the diagram and dashboard from data
     '''
@@ -16,6 +17,13 @@ def dashboard(df):
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
 
     df= clean_measured(df)
+    df_old= df.copy()
+    y_dwarfs= iso_df[iso_df["label"]== 1]
+    o_dwarfs= iso_df2[iso_df2["label"]== 1]
+    y_giants= iso_df[iso_df["label"].isin([2, 3])]
+    o_giants= iso_df2[iso_df2["label"].isin([2, 3])]
+    y_wd= iso_df[iso_df["label"]>= 7]
+    o_wd= iso_df2[iso_df2["label"]>= 7]
     filter_col, out_col= st.columns(2, gap= "medium")
 
     with filter_col:
@@ -23,26 +31,44 @@ def dashboard(df):
         
         subcont= st.container(height=600)
         with subcont:
-            dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df["Distance"].min(), max_val= df["Distance"].max(),
-                                step= step_size(df["Distance"].min(), df["Distance"].max()), sl_key= "dist_sl")
+            dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df_old["Distance"].min(), max_val= df_old["Distance"].max(),
+                                step= step_size(df_old["Distance"].min(), df_old["Distance"].max()), sl_key= "dist_sl")
             df= df[(df["Distance"]>= dist_vals[0]) & (df["Distance"]<= dist_vals[1])]
+
+            if df.empty:
+                st.warning("The selected range is too narrow. Please widen the selection.")
+                st.stop()
             
             spec_vals= st.multiselect(label= "Spectral classes", options= ["M", "K", "G", "F", "A", "B", "O"],
-                                    default= ["M", "K", "G", "F", "A", "B", "O"], key= "spec_vals")
+                                      default= ["M", "K", "G", "F", "A", "B", "O"], key= "spec_vals")
             df= df[df["Spectral class"].isin(spec_vals)]
+
+            if df.empty:
+                st.warning("The selected range is too narrow. Please widen the selection.")
+                st.stop()
             
-            gmag_vals= num_slider(label= "Apparent G magnitude", min_val= df["Apparent G magnitude"].min(), max_val= df["Apparent G magnitude"].max(),
-                                step= step_size(df["Apparent G magnitude"].min(), df["Apparent G magnitude"].max()), sl_key= "gmag_sl")
+            gmag_min, gmag_max= df_old["Apparent G magnitude"].min(), df_old["Apparent G magnitude"].max()
+            gmag_vals= num_slider(label= "Apparent G magnitude", min_val= gmag_min, max_val= gmag_max,
+                                  step= step_size(df_old["Apparent G magnitude"].min(), df_old["Apparent G magnitude"].max()), sl_key= "gmag_sl")
             df= df[(df["Apparent G magnitude"]>= gmag_vals[0]) & (df["Apparent G magnitude"]<= gmag_vals[1])]
             
-            grav_vals= num_slider(label= "Surface gravity", min_val= df["Surface gravity"].min(), max_val= df["Surface gravity"].max(),
-                                step= step_size(df["Surface gravity"].min(), df["Surface gravity"].max()), sl_key= "grav_sl")
+            if df.empty:
+                st.warning("The selected range is too narrow. Please widen the selection.")
+                st.stop()
+
+            grav_min, grav_max= df_old["Surface gravity"].min(), df_old["Surface gravity"].max()
+            grav_vals= num_slider(label= "Surface gravity", min_val= grav_min, max_val= grav_max,
+                                  step= step_size(df_old["Surface gravity"].min(), df_old["Surface gravity"].max()), sl_key= "grav_sl")
             df= df[(df["Surface gravity"]>= grav_vals[0]) & (df["Surface gravity"]<= grav_vals[1])]
+            
+            if df.empty:
+                st.warning("The selected range is too narrow. Please widen the selection.")
+                st.stop()
 
             # Filters
             #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
             #df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
-
+    
     # HR Diagram
     with out_col:
         st.subheader("HR Diagram")
@@ -58,23 +84,43 @@ def dashboard(df):
         with subcont:
             # Displaying different sliders based on chosen x axis
             if x_ax== "Color index":
-                temp_vals= num_slider(label= "Effective temperature", min_val= df["Effective temperature"].min(), max_val= df["Effective temperature"].max(),
-                                      step= step_size(df["Effective temperature"].min(), df["Effective temperature"].max()), sl_key= "temp_sl")
+                temp_min, temp_max= df_old["Effective temperature"].min(), df_old["Effective temperature"].max()
+                temp_vals= num_slider(label= "Effective temperature", min_val= temp_min, max_val= temp_max,
+                                      step= step_size(df_old["Effective temperature"].min(), df_old["Effective temperature"].max()), sl_key= "temp_sl")
                 df= df[(df["Effective temperature"]>= temp_vals[0]) & (df["Effective temperature"]<= temp_vals[1])]
+
+                if df.empty:
+                    st.warning("The selected range is too narrow. Please widen the selection.")
+                    st.stop()
             else:
-                clr_vals= num_slider(label= "Color index", min_val= df["Color index"].min(), max_val= df["Color index"].max(),
-                                     step= step_size(df["Color index"].min(), df["Color index"].max()), sl_key= "clr_sl")
+                clr_min, clr_max= df_old["Color index"].min(), df_old["Color index"].max()
+                clr_vals= num_slider(label= "Color index", min_val= clr_min, max_val= clr_max,
+                                     step= step_size(df_old["Color index"].min(), df_old["Color index"].max()), sl_key= "clr_sl")
                 df= df[(df["Color index"]>= clr_vals[0]) & (df["Color index"]<= clr_vals[1])]
+
+                if df.empty:
+                    st.warning("The selected range is too narrow. Please widen the selection.")
+                    st.stop()
             
             # Displaying different sliders based on chosen y axis
             if y_ax== "Absolute magnitude":
-                lum_vals= num_slider(label= "Luminosity (log)", min_val= df["Log luminosity"].min(), max_val= df["Log luminosity"].max(),
-                                     step= step_size(df["Log luminosity"].min(), df["Log luminosity"].max()), sl_key= "lum_sl")
+                lum_min, lum_max= df_old["Log luminosity"].min(), df_old["Log luminosity"].max()
+                lum_vals= num_slider(label= "Luminosity (log)", min_val= lum_min, max_val= lum_max,
+                                     step= step_size(df_old["Log luminosity"].min(), df_old["Log luminosity"].max()), sl_key= "lum_sl")
                 df= df[(df["Log luminosity"]>= lum_vals[0]) & (df["Log luminosity"]<= lum_vals[1])]
+
+                if df.empty:
+                    st.warning("The selected range is too narrow. Please widen the selection.")
+                    st.stop()
             else:
-                abs_vals= num_slider(label= "Absolute magnitude", min_val= df["Absolute magnitude"].min(), max_val= df["Absolute magnitude"].max(),
-                                     step= step_size(df["Absolute magnitude"].min(), df["Absolute magnitude"].max()), sl_key= "abs_sl")
+                abs_min, abs_max= df_old["Absolute magnitude"].min(), df_old["Absolute magnitude"].max()
+                abs_vals= num_slider(label= "Absolute magnitude", min_val= abs_min, max_val= abs_max,
+                                     step= step_size(df_old["Absolute magnitude"].min(), df_old["Absolute magnitude"].max()), sl_key= "abs_sl")
                 df= df[(df["Absolute magnitude"]>= abs_vals[0]) & (df["Absolute magnitude"]<= abs_vals[1])]
+
+                if df.empty:
+                    st.warning("The selected range is too narrow. Please widen the selection.")
+                    st.stop()
     
     with out_col:
         # Color
@@ -84,7 +130,25 @@ def dashboard(df):
         # Plotting the data
         fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
         fig.update_traces(marker={'size': 1})
-            
+        
+        fig.add_trace(go.Scattergl(x= y_dwarfs[x_ax], y= y_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Young Dwarfs)",
+                                   line=dict(color= 'purple', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        
+        fig.add_trace(go.Scattergl(x= y_giants[x_ax], y= y_giants[y_ax], mode= "lines", name= "Giant Branch (Young Giants)",
+                                   line=dict(color= 'orange', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        
+        #fig.add_trace(go.Scattergl(x= y_wd[x_ax], y= y_wd[y_ax], mode= "lines", name= "White Dwarfs (Young)",
+        #                           line=dict(color= 'white', width= 1, dash= 'solid'), hoverinfo= 'name'))
+
+        fig.add_trace(go.Scattergl(x= o_dwarfs[x_ax], y= o_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Old Dwarfs)",
+                                   line=dict(color= 'violet', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        
+        fig.add_trace(go.Scattergl(x= o_giants[x_ax], y= o_giants[y_ax], mode= "lines", name= "Giant Branch (Old Giants)",
+                                   line=dict(color= 'gold', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        
+        #fig.add_trace(go.Scattergl(x= o_wd[x_ax], y= o_wd[y_ax], mode= "lines", name= "White Dwarfs (Old)",
+        #                           line=dict(color= 'silver', width= 1, dash= 'solid'), hoverinfo= 'name'))
+
         if y_ax== "Absolute magnitude":
             fig.update_yaxes(range= [16, -10])
         else:
@@ -102,5 +166,11 @@ def dashboard(df):
 
 # Execution
 if __name__== "__main__":
-    df = pd.read_csv("data/stars_clean_calc.csv")
-    dashboard(df)
+    @st.cache_data
+    def load_data():
+        df = pd.read_csv("data/stars_clean_calc.csv")
+        iso_df = pd.read_csv('data/isochrone_data.csv')
+        iso_df2 = pd.read_csv('data/isochrone_data_2.csv')
+        return df, iso_df, iso_df2
+    df, iso_df, iso_df2= load_data()
+    dashboard(df, iso_df, iso_df2)
