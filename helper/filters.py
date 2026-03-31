@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.covariance import EllipticEnvelope
 
 def clean_measured(df):
     # Parallax cut: Must be positive to avoid math errors
@@ -42,4 +43,24 @@ def del_outliers(df, names):
             upper_bound = Q3 + 1.5 * IQR
             df_clean = df_clean[(df_clean[name] <= upper_bound)]
     return df_clean
+"""
+teff_gspphot_error colum is not added yet
+"""
+def MCD_filter(df):
+    '''
+    Uses the Minimum Covariance Determinant (MCD) method to remove
+    multivariate statistical outliers based on telescope measurement errors.
+    '''
+    error_columns = ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error", "teff_gspphot_error"]
 
+    available_cols = [col for col in error_columns if col in df.columns]
+
+    if len(available_cols) > 0:
+        data_to_check = df[available_cols]
+
+        mcd_model = EllipticEnvelope(contamination=0.05, random_state=42)
+
+        labels = mcd_model.fit_predict(data_to_check)
+
+        df = df[labels == 1]
+    return df
