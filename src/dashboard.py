@@ -18,12 +18,24 @@ def dashboard(df, iso_df, iso_df2):
 
     df= clean_measured(df)
     df_old= df.copy()
+    #----Data for plotting Main sequence----
     y_dwarfs= iso_df[iso_df["label"]== 1]
     o_dwarfs= iso_df2[iso_df2["label"]== 1]
-    y_giants= iso_df[iso_df["label"].isin([2, 3])]
-    o_giants= iso_df2[iso_df2["label"].isin([2, 3])]
-    y_wd= iso_df[iso_df["label"]>= 7]
-    o_wd= iso_df2[iso_df2["label"]>= 7]
+    y_giants= iso_df[iso_df["label"].isin([2, 3, 4, 5, 6, 7])]
+    o_giants= iso_df2[iso_df2["label"].isin([2, 3, 4, 5, 6, 7])]
+    t = np.linspace(0, 1, 100)
+    # Dummy Young White Dwarfs (Slightly hotter/brighter)
+    y_wd = pd.DataFrame({"Color index": np.linspace(-0.2, 0.6, 100),
+                         "Absolute magnitude": 10 + 5.5 * t - 1.5 * (t - t**2),
+                         "Log effective temperature": np.linspace(4.8, 3.9, 100),
+                         "Log luminosity": np.linspace(-0.5, -3.5, 100)})
+    # Dummy Old White Dwarfs (Shifted slightly to represent an older, cooler population)
+    o_wd = pd.DataFrame({"Color index": np.linspace(-0.1, 0.8, 100),
+                         "Absolute magnitude": 11 + 5.0 * t - 1.0 * (t - t**2),
+                         "Log effective temperature": np.linspace(4.6, 3.7, 100),
+                         "Log luminosity": np.linspace(-1.0, -4.0, 100)})
+    #--------
+
     filter_col, out_col= st.columns(2, gap= "medium")
 
     with filter_col:
@@ -31,6 +43,14 @@ def dashboard(df, iso_df, iso_df2):
         
         subcont= st.container(height=600)
         with subcont:
+            # Quality Filters
+            filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based", "Physical limit-based"])
+            if filt_style== "Outlier detection-based":
+                df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+            else:
+                df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+            
+            # Sliders
             dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df_old["Distance"].min(), max_val= df_old["Distance"].max(),
                                 step= step_size(df_old["Distance"].min(), df_old["Distance"].max()), sl_key= "dist_sl")
             df= df[(df["Distance"]>= dist_vals[0]) & (df["Distance"]<= dist_vals[1])]
@@ -65,9 +85,6 @@ def dashboard(df, iso_df, iso_df2):
                 st.warning("The selected range is too narrow. Please widen the selection.")
                 st.stop()
 
-            # Filters
-            #df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
-            #df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
     
     # HR Diagram
     with out_col:
@@ -134,20 +151,23 @@ def dashboard(df, iso_df, iso_df2):
         fig.add_trace(go.Scattergl(x= y_dwarfs[x_ax], y= y_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Young Dwarfs)",
                                    line=dict(color= 'purple', width= 1, dash= 'solid'), hoverinfo= 'name'))
         
-        fig.add_trace(go.Scattergl(x= y_giants[x_ax], y= y_giants[y_ax], mode= "lines", name= "Giant Branch (Young Giants)",
-                                   line=dict(color= 'orange', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        fig.add_trace(go.Scattergl(x= y_giants[x_ax], y= y_giants[y_ax], mode= "lines", name= "Supergiants",
+                                   line=dict(color= 'red', width= 1, dash= 'solid'), hoverinfo= 'name'))
         
-        #fig.add_trace(go.Scattergl(x= y_wd[x_ax], y= y_wd[y_ax], mode= "lines", name= "White Dwarfs (Young)",
-        #                           line=dict(color= 'white', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        fig.add_trace(go.Scattergl(x= y_wd[x_ax], y= y_wd[y_ax], mode= "lines", name= "White Dwarfs (Young)",
+                                   line=dict(color= 'white', width= 1, dash= 'solid'), hoverinfo= 'name'))
 
         fig.add_trace(go.Scattergl(x= o_dwarfs[x_ax], y= o_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Old Dwarfs)",
-                                   line=dict(color= 'violet', width= 1, dash= 'solid'), hoverinfo= 'name'))
+                                   line=dict(color= 'magenta', width= 1, dash= 'solid'), hoverinfo= 'name'))
         
         fig.add_trace(go.Scattergl(x= o_giants[x_ax], y= o_giants[y_ax], mode= "lines", name= "Giant Branch (Old Giants)",
                                    line=dict(color= 'gold', width= 1, dash= 'solid'), hoverinfo= 'name'))
         
-        #fig.add_trace(go.Scattergl(x= o_wd[x_ax], y= o_wd[y_ax], mode= "lines", name= "White Dwarfs (Old)",
-        #                           line=dict(color= 'silver', width= 1, dash= 'solid'), hoverinfo= 'name'))
+        fig.add_trace(go.Scattergl(x= o_wd[x_ax], y= o_wd[y_ax], mode= "lines", name= "White Dwarfs (Old)",
+                                   line=dict(color= 'grey', width= 1, dash= 'solid'), hoverinfo= 'name'))
+
+        fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                                      title=""), margin=dict(t=50))
 
         if y_ax== "Absolute magnitude":
             fig.update_yaxes(range= [16, -10])
@@ -171,6 +191,8 @@ if __name__== "__main__":
         df = pd.read_csv("data/stars_clean_calc.csv")
         iso_df = pd.read_csv('data/isochrone_data.csv')
         iso_df2 = pd.read_csv('data/isochrone_data_2.csv')
+        iso_df= iso_df.sort_values(by= "Mini")
+        iso_df2= iso_df2.sort_values(by= "Mini")
         return df, iso_df, iso_df2
     df, iso_df, iso_df2= load_data()
     dashboard(df, iso_df, iso_df2)
