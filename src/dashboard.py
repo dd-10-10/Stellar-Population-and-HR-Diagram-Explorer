@@ -48,7 +48,7 @@ def dashboard(df, iso_df, iso_df2):
             # Quality Filters
             filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"])
             if filt_style== "Outlier detection-based (Univariate- IQR)":
-                df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+                df= del_outliers(df, ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error"])
             elif filt_style== "Outlier detection-based (Multivariate- MCD)":
                 df= MCD_filter(df)
             else:
@@ -79,11 +79,11 @@ def dashboard(df, iso_df, iso_df2):
             if df.empty:
                 st.warning("The selected range is too narrow. Please widen the selection.")
                 st.stop()
-
-            grav_min, grav_max= df_old["Surface gravity"].min(), df_old["Surface gravity"].max()
-            grav_vals= num_slider(label= "Surface gravity", min_val= grav_min, max_val= grav_max,
-                                  step= step_size(df_old["Surface gravity"].min(), df_old["Surface gravity"].max()), sl_key= "grav_sl")
-            df= df[(df["Surface gravity"]>= grav_vals[0]) & (df["Surface gravity"]<= grav_vals[1])]
+            if False:
+                grav_min, grav_max= df_old["Surface gravity"].min(), df_old["Surface gravity"].max()
+                grav_vals= num_slider(label= "Surface gravity", min_val= grav_min, max_val= grav_max,
+                                    step= step_size(df_old["Surface gravity"].min(), df_old["Surface gravity"].max()), sl_key= "grav_sl")
+                df= df[(df["Surface gravity"]>= grav_vals[0]) & (df["Surface gravity"]<= grav_vals[1])]
             
             if df.empty:
                 st.warning("The selected range is too narrow. Please widen the selection.")
@@ -192,7 +192,7 @@ def dashboard(df, iso_df, iso_df2):
 if __name__== "__main__":
     @st.cache_data
     def load_data():
-        df = pd.read_csv("data/stars_clean_calc.csv")
+        df = pd.read_csv("data/gaia_cleaned.csv")
         iso_df = pd.read_csv('data/isochrone_data.csv')
         iso_df2 = pd.read_csv('data/isochrone_data_2.csv')
         iso_df= iso_df.sort_values(by= "Mini")
