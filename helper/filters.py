@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.covariance import EllipticEnvelope
 
 def clean_measured(df):
@@ -31,7 +32,6 @@ def hard_filter(df, names):
     return df
 
 # Statistical filter
-# TODO: Figure out a better method for multivariate outlier removal
 
 def del_outliers(df, names):
     df_clean = df.copy()
@@ -43,24 +43,45 @@ def del_outliers(df, names):
             upper_bound = Q3 + 1.5 * IQR
             df_clean = df_clean[(df_clean[name] <= upper_bound)]
     return df_clean
-"""
-teff_gspphot_error colum is not added yet
-"""
+
+
 def MCD_filter(df):
     '''
     Uses the Minimum Covariance Determinant (MCD) method to remove
     multivariate statistical outliers based on telescope measurement errors.
     '''
-    error_columns = ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error", "teff_gspphot_error"]
+    # 1. Calculate the Temperature Error
+    df = df.copy()
+    if 'teff_gspphot_upper' in df.columns and 'teff_gspphot_lower' in df.columns:
+        df['teff_gspphot_error'] = (df['teff_gspphot_upper'] - df['teff_gspphot_lower']) / 2
 
+    # 2. Calculate the Magnitude and Color Errors from Flux Over Error (SNR)
+    MAG_CONSTANT = 1.0857 # 2.5 / ln(10)
+    
+    if 'phot_g_mean_flux_over_error' in df.columns:
+        df['phot_g_mean_mag_error'] = MAG_CONSTANT / df['phot_g_mean_flux_over_error']
+        
+    if 'phot_bp_mean_flux_over_error' in df.columns and 'phot_rp_mean_flux_over_error' in df.columns:
+        sigma_bp = MAG_CONSTANT / df['phot_bp_mean_flux_over_error']
+        sigma_rp = MAG_CONSTANT / df['phot_rp_mean_flux_over_error']
+        # Remember the double-asterisk to square the numbers!
+        df['bp_rp_error'] = np.sqrt(sigma_bp*2 + sigma_rp*2)
+
+    # 3. Define the actual mathematical error columns for the model
+    error_columns = [
+        "Parallax error", 
+        "phot_g_mean_mag_error", 
+        "bp_rp_error", 
+        "teff_gspphot_error"
+    ]
+
+    # 4. Check which columns actually exist to prevent crashes
     available_cols = [col for col in error_columns if col in df.columns]
 
     if len(available_cols) > 0:
         data_to_check = df[available_cols]
-
         mcd_model = EllipticEnvelope(contamination=0.05, random_state=42)
-
         labels = mcd_model.fit_predict(data_to_check)
-
         df = df[labels == 1]
+        
     return df
