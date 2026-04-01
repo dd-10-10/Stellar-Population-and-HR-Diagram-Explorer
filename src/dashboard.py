@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from  helper.filters import *
 from  helper.custom_slider import *
 
-def dashboard(df, iso_df, iso_df2):
+def dashboard(df, iso_df, iso_df2, y_wd, o_wd, lims):
     '''
     Function to generate the diagram and dashboard from data
     '''
@@ -18,24 +18,11 @@ def dashboard(df, iso_df, iso_df2):
 
     st.sidebar.markdown("# Diagram Explorer 🎈")
 
-    df= clean_measured(df)
-    df_old= df.copy()
     #----Data for plotting Main sequence----
     y_dwarfs= iso_df[iso_df["label"]== 1]
     o_dwarfs= iso_df2[iso_df2["label"]== 1]
     y_giants= iso_df[iso_df["label"].isin([2, 3, 4, 5, 6, 7])]
     o_giants= iso_df2[iso_df2["label"].isin([2, 3, 4, 5, 6, 7])]
-    t = np.linspace(0, 1, 100)
-    # Dummy Young White Dwarfs (Slightly hotter/brighter)
-    y_wd = pd.DataFrame({"Color index": np.linspace(-0.2, 0.6, 100),
-                         "Absolute magnitude": 10 + 5.5 * t - 1.5 * (t - t**2),
-                         "Log effective temperature": np.linspace(4.8, 3.9, 100),
-                         "Log luminosity": np.linspace(-0.5, -3.5, 100)})
-    # Dummy Old White Dwarfs (Shifted slightly to represent an older, cooler population)
-    o_wd = pd.DataFrame({"Color index": np.linspace(-0.1, 0.8, 100),
-                         "Absolute magnitude": 11 + 5.0 * t - 1.0 * (t - t**2),
-                         "Log effective temperature": np.linspace(4.6, 3.7, 100),
-                         "Log luminosity": np.linspace(-1.0, -4.0, 100)})
     #--------
 
     filter_col, out_col= st.columns([0.4, 0.6], gap= "medium")
@@ -55,8 +42,8 @@ def dashboard(df, iso_df, iso_df2):
                 df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
             
             # Sliders
-            dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= df_old["Distance"].min(), max_val= df_old["Distance"].max(),
-                                step= step_size(df_old["Distance"].min(), df_old["Distance"].max()), sl_key= "dist_sl")
+            dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= lims["Distance"][0], max_val= lims["Distance"][1],
+                                step= step_size(lims["Distance"][0], lims["Distance"][1]), sl_key= "dist_sl")
             df= df[(df["Distance"]>= dist_vals[0]) & (df["Distance"]<= dist_vals[1])]
 
             if df.empty:
@@ -71,9 +58,9 @@ def dashboard(df, iso_df, iso_df2):
                 st.warning("The selected range is too narrow. Please widen the selection.")
                 st.stop()
             
-            gmag_min, gmag_max= df_old["Apparent G magnitude"].min(), df_old["Apparent G magnitude"].max()
+            gmag_min, gmag_max= lims["Apparent G magnitude"][0], lims["Apparent G magnitude"][1]
             gmag_vals= num_slider(label= "Apparent G magnitude", min_val= gmag_min, max_val= gmag_max,
-                                  step= step_size(df_old["Apparent G magnitude"].min(), df_old["Apparent G magnitude"].max()), sl_key= "gmag_sl")
+                                  step= step_size(lims["Apparent G magnitude"][0], lims["Apparent G magnitude"][1]), sl_key= "gmag_sl")
             df= df[(df["Apparent G magnitude"]>= gmag_vals[0]) & (df["Apparent G magnitude"]<= gmag_vals[1])]
             
             if df.empty:
@@ -105,18 +92,18 @@ def dashboard(df, iso_df, iso_df2):
         with subcont:
             # Displaying different sliders based on chosen x axis
             if x_ax== "Color index":
-                temp_min, temp_max= df_old["Effective temperature"].min(), df_old["Effective temperature"].max()
+                temp_min, temp_max= lims["Effective temperature"][0], lims["Effective temperature"][1]
                 temp_vals= num_slider(label= "Effective temperature", min_val= temp_min, max_val= temp_max,
-                                      step= step_size(df_old["Effective temperature"].min(), df_old["Effective temperature"].max()), sl_key= "temp_sl")
+                                      step= step_size(lims["Effective temperature"][0], lims["Effective temperature"][1]), sl_key= "temp_sl")
                 df= df[(df["Effective temperature"]>= temp_vals[0]) & (df["Effective temperature"]<= temp_vals[1])]
 
                 if df.empty:
                     st.warning("The selected range is too narrow. Please widen the selection.")
                     st.stop()
             else:
-                clr_min, clr_max= df_old["Color index"].min(), df_old["Color index"].max()
+                clr_min, clr_max= lims["Color index"][0], lims["Color index"][1]
                 clr_vals= num_slider(label= "Color index", min_val= clr_min, max_val= clr_max,
-                                     step= step_size(df_old["Color index"].min(), df_old["Color index"].max()), sl_key= "clr_sl")
+                                     step= step_size(lims["Color index"][0], lims["Color index"][1]), sl_key= "clr_sl")
                 df= df[(df["Color index"]>= clr_vals[0]) & (df["Color index"]<= clr_vals[1])]
 
                 if df.empty:
@@ -125,18 +112,18 @@ def dashboard(df, iso_df, iso_df2):
             
             # Displaying different sliders based on chosen y axis
             if y_ax== "Absolute magnitude":
-                lum_min, lum_max= df_old["Log luminosity"].min(), df_old["Log luminosity"].max()
+                lum_min, lum_max= lims["Log luminosity"][0], lims["Log luminosity"][1]
                 lum_vals= num_slider(label= "Luminosity (log)", min_val= lum_min, max_val= lum_max,
-                                     step= step_size(df_old["Log luminosity"].min(), df_old["Log luminosity"].max()), sl_key= "lum_sl")
+                                     step= step_size(lims["Log luminosity"][0], lims["Log luminosity"][1]), sl_key= "lum_sl")
                 df= df[(df["Log luminosity"]>= lum_vals[0]) & (df["Log luminosity"]<= lum_vals[1])]
 
                 if df.empty:
                     st.warning("The selected range is too narrow. Please widen the selection.")
                     st.stop()
             else:
-                abs_min, abs_max= df_old["Absolute magnitude"].min(), df_old["Absolute magnitude"].max()
+                abs_min, abs_max= lims["Absolute magnitude"][0], lims["Absolute magnitude"][1]
                 abs_vals= num_slider(label= "Absolute magnitude", min_val= abs_min, max_val= abs_max,
-                                     step= step_size(df_old["Absolute magnitude"].min(), df_old["Absolute magnitude"].max()), sl_key= "abs_sl")
+                                     step= step_size(lims["Absolute magnitude"][0], lims["Absolute magnitude"][1]), sl_key= "abs_sl")
                 df= df[(df["Absolute magnitude"]>= abs_vals[0]) & (df["Absolute magnitude"]<= abs_vals[1])]
 
                 if df.empty:
@@ -144,12 +131,13 @@ def dashboard(df, iso_df, iso_df2):
                     st.stop()
     
     with out_col:
+        st.subheader(f"Current size of dataset: {len(df)}")
         # Color
         clr_ax= "Color index"
         clr_scl= st.selectbox("Colour scheme:", ["Blues", "Greys", "Plasma", "RdYlBu", "Reds"], index= 3)
 
         # Plotting the data
-        fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2])
+        fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2], render_mode="webgl")
         fig.update_traces(marker={'size': 1})
         
         fig.add_trace(go.Scattergl(x= y_dwarfs[x_ax], y= y_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Young Dwarfs)",
@@ -193,10 +181,28 @@ if __name__== "__main__":
     @st.cache_data
     def load_data():
         df = pd.read_csv("data/gaia_cleaned.csv")
+        df= clean_measured(df)
         iso_df = pd.read_csv('data/isochrone_data.csv')
         iso_df2 = pd.read_csv('data/isochrone_data_2.csv')
         iso_df= iso_df.sort_values(by= "Mini")
         iso_df2= iso_df2.sort_values(by= "Mini")
-        return df, iso_df, iso_df2
-    df, iso_df, iso_df2= load_data()
-    dashboard(df, iso_df, iso_df2)
+        t = np.linspace(0, 1, 100)
+        # Dummy Young White Dwarfs (Slightly hotter/brighter)
+        y_wd = pd.DataFrame({"Color index": np.linspace(-0.2, 0.6, 100),
+                            "Absolute magnitude": 10 + 5.5 * t - 1.5 * (t - t**2),
+                            "Log effective temperature": np.linspace(4.8, 3.9, 100),
+                            "Log luminosity": np.linspace(-0.5, -3.5, 100)})
+        # Dummy Old White Dwarfs (Shifted slightly to represent an older, cooler population)
+        o_wd = pd.DataFrame({"Color index": np.linspace(-0.1, 0.8, 100),
+                            "Absolute magnitude": 11 + 5.0 * t - 1.0 * (t - t**2),
+                            "Log effective temperature": np.linspace(4.6, 3.7, 100),
+                            "Log luminosity": np.linspace(-1.0, -4.0, 100)})
+        lims= {"Distance": (df["Distance"].min(), df["Distance"].max()),
+               "Apparent G magnitude": (df["Apparent G magnitude"].min(), df["Apparent G magnitude"].max()),
+               "Effective temperature": (df["Effective temperature"].min(), df["Effective temperature"].max()),
+               "Color index": (df["Color index"].min(), df["Color index"].max()),
+               "Log luminosity": (df["Log luminosity"].min(), df["Log luminosity"].max()),
+               "Absolute magnitude": (df["Absolute magnitude"].min(), df["Absolute magnitude"].max())}
+        return df, iso_df, iso_df2, y_wd, o_wd, lims
+    df, iso_df, iso_df2, y_wd, o_wd, lims= load_data()
+    dashboard(df, iso_df, iso_df2, y_wd, o_wd, lims)
