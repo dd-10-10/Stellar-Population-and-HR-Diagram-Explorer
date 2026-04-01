@@ -6,11 +6,8 @@ HR diagrams are scatter plots of stellar data, with the y-axis usually showing i
 
 ## Data Sources and Cleaning
 
-We will be using two data files in the csv format stratified by distance from earth.
+The files used here are based on the strategy that the stars are stratified based on distance. The data is obtained from Gaia. For more detalis, check the Acknowledgements part.
 
-One is called Near_Earth.csv for stars near Earth and the other one is Far_Earth.csv for stars farther from Earth.
-
-We will be updating the readme for the project as it goes on.
 
 ## Data Filtering
 To ensure physical accuracy and minimize observational noise, we will use quality cuts like enforcing brightness limits (phot_g_mean_mag < 17) and removing missing color indices, complementing the dataset's existing parallax filters. When we expand datasets to include metrics like luminosity or effective temperature, then we will use astrophysical cuts. These filters will restrict temperature, luminosity, standard spectral classes, and color indices strictly to realistic physical bounds.
