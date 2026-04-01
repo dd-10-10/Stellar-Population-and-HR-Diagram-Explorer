@@ -46,9 +46,11 @@ def dashboard(df, iso_df, iso_df2):
         subcont= st.container(height=600)
         with subcont:
             # Quality Filters
-            filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based", "Physical limit-based"])
-            if filt_style== "Outlier detection-based":
+            filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"])
+            if filt_style== "Outlier detection-based (Univariate- IQR)":
                 df= del_outliers(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+            elif filt_style== "Outlier detection-based (Multivariate- MCD)":
+                df= MCD_filter(df)
             else:
                 df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
             
