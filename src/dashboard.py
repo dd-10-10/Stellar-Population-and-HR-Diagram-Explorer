@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from  helper.filters import *
 from  helper.custom_slider import *
 
-def dashboard(df, iso_df, iso_df2, y_wd, o_wd, lims):
+def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
     '''
     Function to generate the diagram and dashboard from data
     '''
@@ -35,11 +35,11 @@ def dashboard(df, iso_df, iso_df2, y_wd, o_wd, lims):
             # Quality Filters
             filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"])
             if filt_style== "Outlier detection-based (Univariate- IQR)":
-                df= del_outliers(df, ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error"])
+                df= iqr_df
             elif filt_style== "Outlier detection-based (Multivariate- MCD)":
-                df= MCD_filter(df)
+                df= mcd_df
             else:
-                df= hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+                df= phy_df
             
             # Sliders
             dist_vals= num_slider(label= "Distance from Earth (Parsecs):", min_val= lims["Distance"][0], max_val= lims["Distance"][1],
@@ -181,7 +181,10 @@ if __name__== "__main__":
     @st.cache_data
     def load_data():
         df = pd.read_csv("data/gaia_cleaned.csv")
-        df= clean_measured(df)
+        df = clean_measured(df)
+        iqr_df = del_outliers(df, ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error"])
+        mcd_df = MCD_filter(df)
+        phy_df = hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
         iso_df = pd.read_csv('data/isochrone_data.csv')
         iso_df2 = pd.read_csv('data/isochrone_data_2.csv')
         iso_df= iso_df.sort_values(by= "Mini")
@@ -203,6 +206,6 @@ if __name__== "__main__":
                "Color index": (df["Color index"].min(), df["Color index"].max()),
                "Log luminosity": (df["Log luminosity"].min(), df["Log luminosity"].max()),
                "Absolute magnitude": (df["Absolute magnitude"].min(), df["Absolute magnitude"].max())}
-        return df, iso_df, iso_df2, y_wd, o_wd, lims
-    df, iso_df, iso_df2, y_wd, o_wd, lims= load_data()
-    dashboard(df, iso_df, iso_df2, y_wd, o_wd, lims)
+        return iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims
+    iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims= load_data()
+    dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims)
