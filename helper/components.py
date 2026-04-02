@@ -38,7 +38,7 @@ def draw_spectral_chart(filtered_data, chart_title):
     fig.update_layout(yaxis_title="Percentage of Sample (%)", template="plotly_dark")
     fig.update_yaxes(range=[0, plot_variables['Percentage'].max() * 1.15])
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width=True)
 
 
 # Morgan Keeman Classification Helper
