@@ -25,6 +25,14 @@ if options == "Near":
         draw_spectral_chart(filter_df, f"Near Sample (<= {distance} pc)")
     with col2:
         draw_mk_classification_chart(filter_df, "Luminosity Class Breakdown")
+    
+    st.divider()
+    st.subheader("Inferences")
+    st.markdown("The distribution of stars graph clearly shows us that there is a significant amount of stars of spectral class of G K M with spectral class M being its most significant contributor." \
+    "This is a confirmation of the IMF theory that the universe is mostly composed of low mass, cool stars that are formed in much greater amount and usually outlast the hotter higher temperature stars. ")
+
+    st.markdown("For Luminoisity, it can be clearly understood that there are a lot of main sequence stars in each spectral class. This can be checked by accessing the dashboard and seeing the distribution of all spectral class of stars" \
+    "and observing a massive cluster around the Main Sequence line with very little deviation. Now for stars in the main sequence, a=3.5 so therefore Masses of 95 percentage will be ranging from 2 to 55 times the mass of the sun.")
 
 elif options == "Far":
     max_dist = float(df['Distance'].max())
@@ -38,3 +46,7 @@ elif options == "Far":
         draw_spectral_chart(filter_df, f"Far Sample (>= {distance} pc)")
     with col2:
         draw_mk_classification_chart(filter_df, "Luminosity Class Breakdown")
+    st.divider()
+    st.subheader("Inferences")
+    st.markdown("You can see here that initially that there are lot of  K M G F stars with K leading in proportion. But as we increase the distance the proportion of M stars keep reducing and other stars like K G and F increasing in contribution.At one point, M is gone." \
+    "This does not contradict the IMT theory as")

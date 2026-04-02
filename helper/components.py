@@ -71,7 +71,7 @@ def draw_mk_classification_chart(filtered_data, chart_title):
     fig = px.histogram(
         df_plot, 
         x="Spectral class", 
-        color="MK Class", 
+        color="MK Class",
         category_orders={
             "Spectral class": ["O", "B", "A", "F", "G", "K", "M"],
             "MK Class": [
