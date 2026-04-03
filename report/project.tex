@@ -1,0 +1,212 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+
+\title{SHORT TITLE OF YOUR PROJECT\\
+\large Mini Project for DS3294: Data Science Practice}
+\author{Name1 Surname1 \and Name2 Surname2 \and Name3 Surname3 \and Name4 Surname4}
+\date{March 28, 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Hertzsprung-Russell (HR) diagrams are scatter plots of stellar data, with the y-axis showing increasing luminosity and the x-axis showing colour, spectral class, or decreasing surface temperature. These plots—initially independently formulated by Hertzsprung and Russell—helped astronomers gain a better understanding of stellar evolution. \\
+
+\noindent In this project, we design and implement a reproducible data analysis and visualisation pipeline to explore stellar populations using large astronomical catalogues. Our focus is on constructing and interpreting these HR diagrams while addressing the technical challenges of data volume, measurement uncertainty, and selection effects. By applying quality filters to Gaia DR3 metadata—such as parallax reliability and photometric completeness—we derive the physical quantities necessary to categorize stars and visualize their distribution across different spatial regions.
+
+
+
+\section{Related Work}
+Nulla malesuada porttitor diam...
+
+\section{Our Contribution}
+Quisque ullamcorper placerat ipsum...
+
+\section{Methods}
+
+\subsection{Data}
+Lorem ipsum dolor sit amet...
+
+\subsection{Name of main method/theory/idea}
+\subsubsection{Data Filtering?}
+
+\subsubsection{Analysis}
+The primary approach adopted for the analysis is a comparative population analysis of stellar samples, specifically comparing a near-Earth population ($d < 100$ pc) with a distant field population ($d > 100$ pc)\cite{Gaia2023}. This method enables a direct observational investigation of selection effects by examining differences in luminosity functions, effective temperature distributions, Hertzsprung--Russell (HR) diagrams, and spectral class fractions between the two samples.\\
+
+\noindent By comparing these populations, we identify systematic shifts such as the suppression of faint M-dwarfs and the overrepresentation of brighter K and G-type stars in the distant sample as well as the presence of a main sequence in the HR diagram. These differences provide clear empirical evidence of Malmquist bias, arising from the magnitude-limited nature of the survey\cite{Butkevich2005}.\\
+
+\noindent A comparative approach is preferred over isochrone fitting because the stellar populations considered here are heterogeneous field stars, spanning a wide range of ages, distances, and evolutionary stages. Isochrone fitting assumes a coeval population with common age and metallicity (star clusters), which is not valid for this dataset. Therefore, a comparison of observed distributions offers a more physically meaningful way to study observational biases in such mixed populations.\\
+
+\textbf{Not part of the report, as a reference for the formulae}\\
+\noindent You can use the align environment to manage equations:
+
+\begin{align}
+AX &= \lambda X \label{eq1} \\
+\dot{X} &= \frac{dX}{dt} \label{eq2}
+\end{align}
+
+Refer to Eq.~\ref{eq1} and Eq.~\ref{eq2}.
+
+\section{Results}
+
+\subsection{First results: Plots}
+\subsubsection{ Luminosity Function}
+
+Figure~\ref{fig:luminosity} presents the luminosity function for the near-Earth ($d < 100$ pc) and distant field ($d > 100$ pc) stellar populations.\\
+
+\noindent The near-Earth population peaks at faint magnitudes ($M_V \sim 10$--11), corresponding primarily to K and M dwarf stars. In contrast, the distant population peaks at brighter magnitudes ($M_V \sim 4$--5), corresponding to G-type and subgiant stars.\\
+
+\noindent This systematic shift indicates that intrinsically faint stars are well represented in the nearby sample but are largely absent in the distant sample.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{luminosity.png}
+\caption{Luminosity function showing the distribution of absolute visual magnitudes for near-Earth ($d < 100$ pc) and distant field ($d > 100$ pc) stellar populations. The shift toward brighter magnitudes in the distant population demonstrates Malmquist bias.}
+\label{fig:luminosity}
+\end{figure}
+
+
+\subsubsection{Effective Temperature Distribution}
+
+Figure~\ref{fig:temperature} shows the distribution of effective temperatures for both populations.\\
+
+\noindent The near-Earth population peaks at $\sim 3000$--3500 K, reflecting the dominance of cool M dwarf stars. In contrast, the distant population peaks at higher temperatures ($\sim 4500$--6000 K), corresponding to K and G-type stars, with a noticeable suppression of the cool-star peak.
+
+\noindent This difference arises because cool M dwarfs are intrinsically faint and become undetectable beyond $\sim 100$ pc, leading to a biased temperature distribution in the distant sample.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{temperature.png}
+\caption{Effective temperature distribution for near-Earth and distant stellar populations. The nearby sample is dominated by cool M dwarfs, while the distant sample is biased toward warmer stars due to observational limits.}
+\label{fig:temperature}
+\end{figure}
+
+
+\subsubsection{HR Diagram and Spectral Distribution}
+
+Figure~\ref{fig:hr} presents the Hertzsprung Russell (HR) diagrams for both populations. In both cases, the main sequence is visible as a diagonal band from hot, luminous stars to cool, faint stars.\\
+
+\noindent However, the near-Earth sample extends to very low luminosities, clearly showing the lower main sequence populated by M dwarfs. In contrast, the distant sample is truncated at the faint end, with the lower main sequence largely absent.\\
+
+\noindent Figure~\ref{fig:spectral} further quantifies this effect through spectral class distributions. M-type stars dominate the nearby sample (approximately 50\%) but are significantly underrepresented in the distant sample (approximately 16\%). Conversely, brighter K and G-type stars are overrepresented at larger distances.\\
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{hr.png}   
+\caption{Hertzsprung--Russell diagrams for near-Earth and distant stellar populations. The distant population is truncated at the faint, cool end due to the detection limit.}
+\label{fig:hr}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{spectral_class.png}
+\caption{Spectral class distribution for near-Earth and distant populations. M dwarfs dominate the nearby sample but are underrepresented at larger distances, demonstrating Malmquist bias.}
+\label{fig:spectral}
+\end{figure}
+
+\subsection{Second results: Dashboard}
+Quisque ullamcorper placerat ipsum...
+
+\subsection{Third results: Use case}
+Nulla malesuada porttitor diam...
+
+\section{Conclusion and Outlook}
+
+In this study, we analysed stellar populations using Gaia DR3 data. By comparing a near-Earth sample ($d < 100$ pc) with a distant field sample ($d > 100$ pc), we examined how observational selection effects influence the inferred properties of stellar populations.\\
+
+\noindent The luminosity function revealed a clear shift toward intrinsically brighter stars in the distant sample, highlighting the inability of magnitude-limited surveys to detect faint objects such as M dwarfs at larger distances. This effect was further supported by the effective temperature distribution, where the nearby population is dominated by cool ($\sim$3000 K) M-type stars, while the distant sample shows a bias toward warmer K- and G-type stars.\\
+
+\noindent The Hertzsprung–Russell diagrams provided strong visual evidence of this bias, with the distant population exhibiting a truncated main sequence at the faint, cool end. Similarly, the spectral class distribution quantitatively confirmed the underrepresentation of M dwarfs and the overrepresentation of brighter stellar types in the distant sample.\\
+
+\noindent Overall, our results demonstrate that the apparent differences between nearby and distant stellar populations are not purely physical, but are largely driven by observational limitations. Malmquist bias must therefore be carefully accounted for in any statistical study of stellar populations.\\
+
+\noindent A potential direction for future work is the use of dynamical population synthesis, where the Galactic field stellar population is modeled as a superposition of contributions from star clusters formed at different times and distances. In this framework, field stars are not treated as an independent population but as the combined outcome of cluster formations. Such approaches provide a more physically guided solution by linking field star properties directly to cluster evolution \cite{Marks2011}.
+
+\section{Acknowledgements}
+Pellentesque habitant morbi tristique...
+
+\section{Author Contributions}
+Lorem ipsum dolor sit amet...
+
+\section{Code Availability}
+The code for this project is available at:
+\url{https://github.com/bedartha/cl-todo}
+
+\section{References}
+\begin{thebibliography}{9}
+
+\bibitem{Butkevich2005}
+Butkevich, A. G., Berdyugin, A. V., \& Teerikorpi, P. (2005).
+\textit{Malmquist bias}.
+Monthly Notices of the Royal Astronomical Society, 362, 321.
+
+\bibitem{Marks2011}
+Marks, M., \& Kroupa, P. (2011).
+\textit{Dynamical population synthesis: Constructing the stellar contents of galactic field populations}.
+Monthly Notices of the Royal Astronomical Society.
+
+\bibitem{Gaia2023}
+Gaia Collaboration, Vallenari, A., Brown, A. G. A., et al. (2023).
+\textit{Gaia Data Release 3: Summary of the content and survey properties}.
+Astronomy \& Astrophysics, 674, A1.
+doi:10.1051/0004-6361/202243940
+
+\end{thebibliography}
+
+\section{Appendix}
+
+\subsection{Additional Figures}
+Additional figures can go here.
+
+\subsection{Algorithms}
+
+\begin{algorithm}
+\caption{An algorithm with caption}
+\begin{algorithmic}
+\Require $n \geq 0$
+\Ensure $y = x^n$
+\State $y \gets 1$
+\State $X \gets x$
+\State $N \gets n$
+\While{$N \neq 0$}
+    \If{$N$ is even}
+        \State $X \gets X \times X$
+        \State $N \gets N/2$
+    \Else
+        \State $y \gets y \times X$
+        \State $N \gets N - 1$
+    \EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Code Snippets}
+
+\begin{verbatim}
+# Function to check prime numbers
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+# Print primes from 1 to 20
+for i in range(1, 21):
+    if is_prime(i):
+        print(f"{i} is prime")
+\end{verbatim}
+
+\end{document}
