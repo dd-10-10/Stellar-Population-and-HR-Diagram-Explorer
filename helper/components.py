@@ -102,6 +102,95 @@ def draw_mk_classification_chart(filtered_data, chart_title):
 
     st.plotly_chart(fig, width="stretch")
 
+def draw_temperature_chart(filtered_data, chart_title):
+    if filtered_data.empty:
+        return # Warning already handled by the first chart
+
+    # Create a copy so we don't overwrite the original dataframe
+    df_plot = filtered_data.copy()
+    df_plot['MK Class'] = df_plot.apply(assign_mk_class, axis=1)
+
+    fig = px.histogram(
+        df_plot, 
+        x="Effective temperature", 
+        color="MK Class",
+        category_orders={"MK Class": ["I - Supergiants", "II - Bright Giants", "III - Giants", 
+                                      "IV - Subgiants", "V - Main Sequence", "White Dwarfs"]}, 
+        barmode='stack',
+        title=chart_title,
+        color_discrete_map= {"I - Supergiants": "#FF3333",
+                             "II - Bright Giants": "#FF8833", 
+                             "III - Giants": "#FFCC00",
+                             "IV - Subgiants": "#FFFF66", 
+                             "V - Main Sequence": "#4488FF",
+                             "White Dwarfs": "#FFFFFF"})
+
+    fig.update_layout(template="plotly_dark",
+                      xaxis_title="Effective temperature",
+                      yaxis_title="Number of Stars",
+                      legend_title="Spectral Class")
+
+    st.plotly_chart(fig, width="stretch")
+
+def draw_distance_chart(filtered_data, chart_title):
+    if filtered_data.empty:
+        return # Warning already handled by the first chart
+
+    # Create a copy so we don't overwrite the original dataframe
+    df_plot = filtered_data.copy()
+    df_plot['MK Class'] = df_plot.apply(assign_mk_class, axis=1)
+
+    fig = px.histogram(
+        df_plot, 
+        x="Distance", 
+        color="Spectral class",
+        category_orders={"Spectral class": ["O", "B", "A", "F", "G", "K", "M"],}, 
+        barmode='stack',
+        title=chart_title,
+        color_discrete_map= {"O": "#4466FF",
+                             "B": "#88BBFF",
+                             "A": "#FFFFFF",
+                             "F": "#FFFF77",
+                             "G": "#FFCC00",
+                             "K": "#FF8800",
+                             "M": "#FF3333"})
+
+    fig.update_layout(template="plotly_dark",
+                      xaxis_title="Distance",
+                      yaxis_title="Number of Stars",
+                      legend_title="Spectral Class")
+
+    st.plotly_chart(fig, width="stretch")
+
+def draw_extinction_chart(filtered_data, chart_title):
+    if filtered_data.empty:
+        return # Warning already handled by the first chart
+
+    # Create a copy so we don't overwrite the original dataframe
+    df_plot = filtered_data.copy()
+    df_plot['MK Class'] = df_plot.apply(assign_mk_class, axis=1)
+
+    fig= px.scatter(df_plot,
+                    x= "Distance",
+                    y= "Extinction in G band",
+                    color= "Spectral class",
+                    category_orders= {"Spectral class": ["O", "B", "A", "F", "G", "K", "M"],},
+                    color_discrete_map= {"O": "#4466FF",
+                                         "B": "#88BBFF",
+                                         "A": "#FFFFFF",
+                                         "F": "#FFFF77",
+                                         "G": "#FFCC00",
+                                         "K": "#FF8800",
+                                         "M": "#FF3333"})
+    
+    fig.update_traces(marker={'size': 2})
+    fig.update_layout(template="plotly_dark",
+                      xaxis_title="Distance",
+                      yaxis_title="Effect of Dust (G Band Extinction)",
+                      legend_title="Spectral Class")
+
+    st.plotly_chart(fig, width="stretch")
+
 # --- The New Average Metric by Distance Function ---
 def draw_avg_metrics_by_distance(filtered_data, metric="Effective temperature", bin_size=10):
     """

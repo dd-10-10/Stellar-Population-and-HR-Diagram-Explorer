@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Updated imports to include the custom slider and the new distance chart
-from helper.components import load_data, draw_spectral_chart, draw_mk_classification_chart, draw_avg_metrics_by_distance
+from helper.components import load_data, draw_temperature_chart, draw_mk_classification_chart, draw_avg_metrics_by_distance, draw_distance_chart, draw_extinction_chart
 from helper.custom_slider import num_slider, step_size
 
 st.set_page_config(layout="wide") # Highly recommended for side-by-side charts
@@ -50,9 +50,11 @@ if options == "Near":
         # Render charts
         col1, col2 = st.columns(2)
         with col1:
-            draw_spectral_chart(filter_df, f"Near Sample ({dist_vals[0]} to {dist_vals[1]} pc)")
+            draw_distance_chart(filter_df, "Distance Distribution")
+            draw_extinction_chart(filter_df, "Effect of Dust")
         with col2:
             draw_mk_classification_chart(filter_df, "Luminosity Class Breakdown")
+            draw_temperature_chart(filter_df, "Effective Temperature Breakdown")
         
         # Render the new average metric chart
         draw_avg_metrics_by_distance(filter_df, metric=selected_metric, bin_size=5)
@@ -92,9 +94,11 @@ elif options == "Far":
         # Render charts
         col1, col2 = st.columns(2)
         with col1:
-            draw_spectral_chart(filter_df, f"Far Sample ({dist_vals[0]:.1f} to {dist_vals[1]:.1f} pc)")
+            draw_distance_chart(filter_df, "Distance Distribution")
+            draw_extinction_chart(filter_df, "Effect of Dust")
         with col2:
             draw_mk_classification_chart(filter_df, "Luminosity Class Breakdown")
+            draw_temperature_chart(filter_df, "Effective Temperature Breakdown")
             
         # Render the new average metric chart
         draw_avg_metrics_by_distance(filter_df, metric=selected_metric, bin_size=50)
