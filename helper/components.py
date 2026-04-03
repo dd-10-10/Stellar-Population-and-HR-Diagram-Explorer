@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 
+from helper.filters import *
 
 scientific_star_colors = {
     "O": "#9bb0ff", "B": "#aabfff", "A": "#cad7ff", 
@@ -11,7 +12,11 @@ scientific_star_colors = {
 @st.cache_data
 def load_data():
     df = pd.read_csv("data/gaia_cleaned.csv")
-    return df
+    df = clean_measured(df)
+    iqr_df = del_outliers(df, ["Parallax error", "phot_g_mean_flux_over_error", "phot_bp_mean_flux_over_error", "phot_rp_mean_flux_over_error"])
+    mcd_df = MCD_filter(df)
+    phy_df = hard_filter(df, ["Apparent G magnitude", "Color index", "Effective temperature", "Log luminosity"])
+    return iqr_df, mcd_df, phy_df   
 
 
 def draw_spectral_chart(filtered_data, chart_title):

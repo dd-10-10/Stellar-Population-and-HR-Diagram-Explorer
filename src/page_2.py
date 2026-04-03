@@ -7,17 +7,25 @@ from helper.custom_slider import num_slider, step_size
 st.set_page_config(layout="wide") # Highly recommended for side-by-side charts
 st.title("Stellar Population Statistics")
 
-df = load_data()
+iqr_df, mcd_df, phy_df = load_data()
 
 # 3. UI LOGIC
 options = st.radio("Select Stellar Sample:", ["Near", "Far"], horizontal=True)
+# Quality Filters
+filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"])
+if filt_style== "Outlier detection-based (Univariate- IQR)":
+    df= iqr_df
+elif filt_style== "Outlier detection-based (Multivariate- MCD)":
+    df= mcd_df
+else:
+    df= phy_df
 st.divider()
 
 # Metric selector for the new distance trend chart
 st.subheader("Trends")
 selected_metric = st.selectbox(
     "Select metric to average by :", 
-    ["Effective temperature", "Log luminosity", "Absolute magnitude"]
+    ["Effective temperature", "Log luminosity", "Apparent G magnitude"]
 )
 st.divider()
 
