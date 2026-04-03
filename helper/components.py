@@ -97,3 +97,38 @@ def draw_mk_classification_chart(filtered_data, chart_title):
 
     st.plotly_chart(fig, width="stretch")
 
+# --- The New Average Metric by Distance Function ---
+def draw_avg_metrics_by_distance(filtered_data, metric="Effective temperature", bin_size=10):
+    """
+    Groups data into distance bins and plots the average of the chosen metric.
+    """
+    if filtered_data.empty:
+        return
+
+    df_plot = filtered_data.copy()
+    
+    # Create distance bins
+    df_plot['Distance Bin'] = (df_plot['Distance'] // bin_size) * bin_size
+    
+    # Group by the bin and calculate the mean of the selected metric
+    avg_df = df_plot.groupby('Distance Bin')[metric].mean().reset_index()
+    
+    # Sort the values just to be safe before plotting a line
+    avg_df = avg_df.sort_values(by='Distance Bin')
+
+    fig = px.line(
+        avg_df, 
+        x="Distance Bin", 
+        y=metric,
+        title=f"Average {metric} by Distance",
+        markers=True,
+        color_discrete_sequence=["#00ffcc"]
+    )
+    
+    fig.update_layout(
+        template="plotly_dark",
+        xaxis_title="Distance (Parsecs)",
+        yaxis_title=f"Average {metric}"
+    )
+
+    st.plotly_chart(fig, width="stretch")
