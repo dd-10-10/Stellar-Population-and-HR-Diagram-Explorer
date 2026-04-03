@@ -14,9 +14,9 @@ options = st.radio("Select Stellar Sample:", ["Near", "Far"], horizontal=True)
 st.divider()
 
 # Metric selector for the new distance trend chart
-st.subheader("Distance Trends")
+st.subheader("Trends")
 selected_metric = st.selectbox(
-    "Select metric to average by distance:", 
+    "Select metric to average by :", 
     ["Effective temperature", "Log luminosity", "Absolute magnitude"]
 )
 st.divider()
