@@ -38,7 +38,7 @@ if options == "Near":
     
     st.markdown("In both panels, the main sequence is clearly visible as a diagonal band running from hot, luminous stars (upper left) to cool, faint stars (lower right).")
     
-    st.markdown("It is important to note that the main sequence visible in the distant field population does not represent a same-age stellar population. Rather," \ 
+    st.markdown("It is important to note that the main sequence visible in the distant field population does not represent a same-age stellar population. Rather," \
     "stars of vastly different ages and distances converge on the main sequence simply because it is the longest lived evolutionary phase")
     
 elif options == "Far":
@@ -62,7 +62,7 @@ elif options == "Far":
     "moderate in size, temperature, brightness, similar to the sun) and subgiant stars(stars that have expanded massively after using up hydrogen in their core.).")
     
     st.markdown("the distant field HR diagram is truncated at the faint end; the lower main sequence is sparsely populated because cool red dwarf stars" \
-    "are undetectable at large distances. This truncation is a direct observational signature of Malmquist bias."
+    "are undetectable at large distances. This truncation is a direct observational signature of Malmquist bias.")
     
     st.markdown("In both panels, the main sequence is clearly visible as a diagonal band running from hot, luminous stars (upper left) to cool, faint stars (lower right).")
     
