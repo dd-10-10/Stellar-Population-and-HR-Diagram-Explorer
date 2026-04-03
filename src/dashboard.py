@@ -66,17 +66,7 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
             if df.empty:
                 st.warning("The selected range is too narrow. Please widen the selection.")
                 st.stop()
-            if False:
-                grav_min, grav_max= df_old["Surface gravity"].min(), df_old["Surface gravity"].max()
-                grav_vals= num_slider(label= "Surface gravity", min_val= grav_min, max_val= grav_max,
-                                    step= step_size(df_old["Surface gravity"].min(), df_old["Surface gravity"].max()), sl_key= "grav_sl")
-                df= df[(df["Surface gravity"]>= grav_vals[0]) & (df["Surface gravity"]<= grav_vals[1])]
-            
-            if df.empty:
-                st.warning("The selected range is too narrow. Please widen the selection.")
-                st.stop()
 
-    
     # HR Diagram
     with out_col:
         st.subheader("HR Diagram")
