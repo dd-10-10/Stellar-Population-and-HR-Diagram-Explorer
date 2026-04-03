@@ -13,10 +13,11 @@ The files used here are based on the strategy that the stars are stratified base
 To ensure physical accuracy and minimize observational noise, we will use quality cuts like enforcing brightness limits (phot_g_mean_mag < 17) and removing missing color indices, complementing the dataset's existing parallax filters. When we expand datasets to include metrics like luminosity or effective temperature, then we will use astrophysical cuts. These filters will restrict temperature, luminosity, standard spectral classes, and color indices strictly to realistic physical bounds.
 
 ## Data Analysis
-Isochrone fitting can be used to estimate stellar ages, masses, and metallicities, while main-sequence turnoff identification helps determine the age of stellar populations. 
+Isochrone fitting can be used to estimate stellar ages, masses, and metallicities for star cluster.
 
-HR diagrams can also be used together with how stars move and their chemical composition to study the structure of the Galaxy, see how stars change as they age, and look at differences in their metallicity. 
-Based on the parameters chosen different analysis method may be used.
+However, since the data used is of field star containing stars from multiple distances and age, therefore the isochrone fitting is not applicable and we carry out a comparitive study between near and far field stars.
+
+The analysis involved constructing multiple statistical representations of the data, including luminosity functions, effective temperature distributions, Hertzsprung–Russell (HR) diagrams, and spectral class distributions. These visualisations were used to systematically compare the properties of the two populations and infer the reason behind similarities and differences between these populations.
 
 ## Plots
 The plotly python library can be used to make interactive plots, which is how the HR diagrams will be created here. 
