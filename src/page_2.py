@@ -114,3 +114,6 @@ elif options == "Far":
     st.markdown("In both panels, the main sequence is clearly visible as a diagonal band running from hot, luminous stars (upper left) to cool, faint stars (lower right).")
     
     st.markdown("It is important to note that the main sequence visible in the distant field population does not represent a same-age stellar population. Rather, stars of vastly different ages and distances converge on the main sequence simply because it is the longest lived evolutionary phase.")
+
+# Overall stats here
+# Plot(df, ...)
