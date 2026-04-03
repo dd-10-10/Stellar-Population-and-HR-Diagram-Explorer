@@ -19,10 +19,12 @@ HR diagrams can also be used together with how stars move and their chemical com
 Based on the parameters chosen different analysis method may be used.
 
 ## Plots
-The plotly python library can be used to make interactive plots, which is how the HR diagrams will be created here. We may switch later depending on how our vision for the plots evolves.
+The plotly python library can be used to make interactive plots, which is how the HR diagrams will be created here. 
 
 ## Dashboard
-The dashboard will be made using the streamlit python library, which allows for creation of a dashboard page, locally hosted or otherwise, through python code. The dashboard will allow viewers to select specific subsets of stellar data based on various criteria.
+The dashboard will be made using the streamlit python library, which allows for creation of a dashboard page, locally hosted or otherwise, through python code. The dashboard will allow viewers to select specific subsets of stellar data based on various criteria. 
+
+There are two pages to the dashboard, one of them being the HR Diagram plotter itself, consisting of various parameters to see the distribution of stars and get an idea of stellar evolution is through this diagram. The second page is basically calculating the summary statistics, wherein much more detail can be found about the stars in general like, distribution of stars in the spectral class etc.
 
 ## Acknowledgments
 
