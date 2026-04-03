@@ -1,24 +1,39 @@
 import streamlit as st
 
-# Updated imports to include the custom slider and the new distance chart
-from helper.components import load_data, draw_temperature_chart, draw_mk_classification_chart, draw_avg_metrics_by_distance, draw_distance_chart, draw_extinction_chart
+# Updated imports to include the custom slider, all new charts, and the comparative overall stats
+from helper.components import (
+    load_data, 
+    draw_temperature_chart, 
+    draw_mk_classification_chart, 
+    draw_avg_metrics_by_distance, 
+    draw_distance_chart, 
+    draw_extinction_chart,
+    draw_comparative_histograms, 
+    draw_comparative_spectral
+)
 from helper.custom_slider import num_slider, step_size
 
-st.set_page_config(layout="wide") # Highly recommended for side-by-side charts
+st.set_page_config(layout="wide")
 st.title("Stellar Population Statistics")
 
 iqr_df, mcd_df, phy_df = load_data()
 
 # 3. UI LOGIC
 options = st.radio("Select Stellar Sample:", ["Near", "Far"], horizontal=True)
+
 # Quality Filters
-filt_style= st.selectbox("Select quality cut style:", ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"])
-if filt_style== "Outlier detection-based (Univariate- IQR)":
-    df= iqr_df
-elif filt_style== "Outlier detection-based (Multivariate- MCD)":
-    df= mcd_df
+filt_style = st.selectbox(
+    "Select quality cut style:", 
+    ["Outlier detection-based (Univariate- IQR)", "Outlier detection-based (Multivariate- MCD)", "Physical limit-based"]
+)
+
+if filt_style == "Outlier detection-based (Univariate- IQR)":
+    df = iqr_df
+elif filt_style == "Outlier detection-based (Multivariate- MCD)":
+    df = mcd_df
 else:
-    df= phy_df
+    df = phy_df
+
 st.divider()
 
 # Metric selector for the new distance trend chart
@@ -115,5 +130,22 @@ elif options == "Far":
     
     st.markdown("It is important to note that the main sequence visible in the distant field population does not represent a same-age stellar population. Rather, stars of vastly different ages and distances converge on the main sequence simply because it is the longest lived evolutionary phase.")
 
-# Overall stats here
-# Plot(df, ...)
+# ==========================================
+# --- INDEPENDENT OVERALL STATISTICS ---
+# ==========================================
+st.divider()
+st.header("Overall Comparative Statistics")
+st.markdown("Comparing the global distribution of stars located within 100 parsecs (Near) to those beyond 100 parsecs (Far).")
+
+
+
+fig_lum, fig_temp = draw_comparative_histograms(df)
+fig_spec = draw_comparative_spectral(df)
+stat_col1, stat_col2 = st.columns(2)
+with stat_col1:
+    st.plotly_chart(fig_lum, width="stretch")
+with stat_col2:
+    st.plotly_chart(fig_temp, width="stretch")
+
+# Render the Spectral Class chart at full width below them
+st.plotly_chart(fig_spec, width="stretch")

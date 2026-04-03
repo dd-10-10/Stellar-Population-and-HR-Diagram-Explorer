@@ -1,13 +1,15 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-
+import numpy as np 
 from helper.filters import *
 
 scientific_star_colors = {
     "O": "#9bb0ff", "B": "#aabfff", "A": "#cad7ff", 
     "F": "#f8f7ff", "G": "#fff4ea", "K": "#ffd2a1", "M": "#ffcc6f"
 }
+
+pop_colors = {"Near Earth < 100pc": "#00E5FF", "Far Earth > 100pc": "#FF4466"} 
 #Caching the data to load faster
 @st.cache_data
 def load_data():
@@ -226,3 +228,85 @@ def draw_avg_metrics_by_distance(filtered_data, metric="Effective temperature", 
     )
 
     st.plotly_chart(fig, width="stretch")
+
+
+
+def draw_comparative_histograms(df):
+    """
+    Recreates the overall Luminosity and Temperature overlapping histograms.
+    """
+    df_plot = df.copy()
+    
+    # Create a new column to split the populations at the 100pc mark
+    df_plot['Population'] = np.where(df_plot['Distance'] < 100, 'Near Earth < 100pc', 'Far Earth > 100pc')
+    
+    # Custom colors to match your teammate's Matplotlib charts
+    
+
+    # 1. Luminosity Function (Absolute Magnitude)
+    fig_lum = px.histogram(
+        df_plot, 
+        x="Absolute magnitude", 
+        color="Population",
+        barmode="overlay", # Overlaps the bars
+        histnorm='percent', # Converts raw counts to percentages
+        color_discrete_map=pop_colors,
+        title="Luminosity Function — Near vs Far Stars"
+    )
+    fig_lum.update_layout(
+        template="plotly_dark", 
+        yaxis_title="Percentage of Stars (%)", 
+        xaxis_title="Absolute Visual Magnitude"
+    )
+    # Make bars slightly transparent to see the overlap
+    fig_lum.update_traces(opacity=0.75)
+    # 2. Effective Temperature Distribution
+    fig_temp = px.histogram(
+        df_plot, 
+        x="Effective temperature", 
+        color="Population",
+        barmode="overlay", 
+        histnorm='percent',
+        color_discrete_map=pop_colors,
+        title="Effective Temperature Distribution — Near vs Far Stars"
+    )
+    fig_temp.update_layout(
+        template="plotly_dark", 
+        yaxis_title="Percentage of Stars (%)", 
+        xaxis_title="Effective Temperature (K)"
+    )
+    fig_temp.update_traces(opacity=0.75)
+
+    return fig_lum, fig_temp
+
+
+def draw_comparative_spectral(df):
+    """
+    Recreates the overall Spectral Class grouped bar chart.
+    """
+    df_plot = df.copy()
+    df_plot = df_plot.dropna(subset=['Distance', 'Spectral class'])
+    df_plot['Population'] = np.where(df_plot['Distance'] < 100, 'Near Earth < 100pc', 'Far Earth > 100pc')
+    
+    # Calculate percentages for each spectral class WITHIN each population
+    counts = df_plot.groupby(['Population', 'Spectral class']).size().reset_index(name='Count')
+    totals = df_plot.groupby('Population').size().reset_index(name='Total')
+    merged = pd.merge(counts, totals, on='Population')
+    merged['Percentage'] = (merged['Count'] / merged['Total']) * 100
+    fig_spec = px.bar(merged, 
+        x="Spectral class", 
+        y="Percentage", 
+        color="Population",
+        barmode="group", # Places bars side-by-side
+        category_orders={"Spectral class": ["O", "B", "A", "F", "G", "K", "M"]},
+        color_discrete_map=pop_colors,
+        title="Spectral Class Distribution — Near vs Far Stars" )
+    
+        
+    fig_spec.update_layout(
+        template="plotly_dark", 
+        yaxis_title="Percentage (%)",
+        xaxis_title="Spectral Class"
+    )
+    
+    return fig_spec
