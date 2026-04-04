@@ -112,15 +112,21 @@ The stellar data is stratified based on distance and obtained from the Gaia miss
 ---
 
 ## Data Filtering
+The dashboard allows the user to filter the dataset in three ways:
+- Physical limits
+    To ensure physical accuracy and minimise observational noise, quality cuts are applied, including:
 
-To ensure physical accuracy and minimise observational noise, quality cuts are applied, including:
+    - Enforcing brightness limits (`phot_g_mean_mag < 17`)
+    - Removing entries with missing colour indices
+    - Complementing the dataset's existing parallax filters
 
-- Enforcing brightness limits (`phot_g_mean_mag < 17`)
-- Removing entries with missing colour indices
-- Complementing the dataset's existing parallax filters
+    When the dataset is expanded to include metrics like luminosity or effective temperature, astrophysical cuts are also applied. These restrict temperature, luminosity, standard spectral classes, and colour indices strictly to realistic physical bounds.
 
-When the dataset is expanded to include metrics like luminosity or effective temperature, astrophysical cuts are also applied. These restrict temperature, luminosity, standard spectral classes, and colour indices strictly to realistic physical bounds.
-
+- Univariate outlier removal
+    This method involves detecting, and then removing, outlier readings with large amounts of error via iterative detection of univariate outliers through the IQR method.
+    
+- Multivariate outlier removal
+    In this case, The MCD (Minimum Covariance Determinant) method is used to identify and remove outliers.
 ---
 
 ## Data Analysis
@@ -151,7 +157,7 @@ The dashboard is built using the [Streamlit](https://streamlit.io/) Python libra
 The dashboard consists of two pages:
 
 1. **HR Diagram Plotter** (`dashboard.py`) — Displays the distribution of stars with various adjustable parameters, providing insight into stellar evolution through the HR diagram.
-2. **Summary Statistics** (`page_2.py`) — Provides detailed statistical information about the stellar population, including the distribution of stars across spectral classes and other properties.
+2. **Other Visualisations** (`page_2.py`) — Provides more information about the stellar population through other views of the data, including the distribution of stars across spectral classes and other properties.
 
 ---
 
