@@ -16,8 +16,6 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
 
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
 
-    st.sidebar.markdown("# Diagram Explorer")
-
     #----Data for plotting Main sequence----
     y_dwarfs= iso_df[iso_df["label"]== 1]
     o_dwarfs= iso_df2[iso_df2["label"]== 1]
@@ -197,5 +195,6 @@ if __name__== "__main__":
                "Log luminosity": (df["Log luminosity"].min(), df["Log luminosity"].max()),
                "Absolute magnitude": (df["Absolute magnitude"].min(), df["Absolute magnitude"].max())}
         return iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims
+    st.sidebar.markdown("# HR Diagram Explorer")
     iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims= load_data()
     dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims)

@@ -36,6 +36,11 @@ cd your-repo-name
 python -m venv venv
 source venv/bin/activate        # On Windows: venv\Scripts\activate
 ```
+If using Anaconda:
+```bash
+conda create --name myenv
+conda activate myenv
+```
 
 ### Install Dependencies
 
@@ -55,7 +60,7 @@ pandas
 ### Run the Dashboard
 
 ```bash
-streamlit run src/app.py
+python -m streamlit run src/app.py
 ```
 
 This will launch the dashboard in your default browser. From there you can explore the HR Diagram Plotter and Summary Statistics pages using the sidebar navigation.
@@ -153,5 +158,3 @@ The dashboard consists of two pages:
 ## Acknowledgements
 
 This work has made use of data from the European Space Agency (ESA) mission **[Gaia](https://www.cosmos.esa.int/gaia)**, processed by the Gaia Data Processing and Analysis Consortium (**[DPAC](https://www.cosmos.esa.int/web/gaia/dpac/consortium)**).
-
-Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.

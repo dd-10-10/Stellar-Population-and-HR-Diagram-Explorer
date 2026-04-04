@@ -14,7 +14,8 @@ from helper.components import (
 from helper.custom_slider import num_slider, step_size
 
 st.set_page_config(layout="wide")
-st.title("Stellar Population Statistics")
+st.title("Stellar Population Visualisations")
+st.sidebar.markdown("# Other Visualisations")
 
 iqr_df, mcd_df, phy_df = load_data()
 
