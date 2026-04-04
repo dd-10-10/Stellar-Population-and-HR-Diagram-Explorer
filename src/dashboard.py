@@ -16,7 +16,7 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
 
     st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
 
-    st.sidebar.markdown("# Diagram Explorer 🎈")
+    st.sidebar.markdown("# Diagram Explorer")
 
     #----Data for plotting Main sequence----
     y_dwarfs= iso_df[iso_df["label"]== 1]

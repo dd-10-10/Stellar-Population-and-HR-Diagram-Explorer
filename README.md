@@ -46,6 +46,7 @@ pip install -r requirements.txt
 The `requirements.txt` includes the following core libraries:
 
 ```
+scikit-learn
 streamlit
 plotly
 pandas
