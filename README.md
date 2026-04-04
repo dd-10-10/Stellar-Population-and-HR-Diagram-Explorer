@@ -113,7 +113,7 @@ The stellar data is stratified based on distance and obtained from the Gaia miss
 
 ## Data Filtering
 The dashboard allows the user to filter the dataset in three ways:
-- Physical limits
+- Physical limits \\
     To ensure physical accuracy and minimise observational noise, quality cuts are applied, including:
 
     - Enforcing brightness limits (`phot_g_mean_mag < 17`)
@@ -122,10 +122,10 @@ The dashboard allows the user to filter the dataset in three ways:
 
     When the dataset is expanded to include metrics like luminosity or effective temperature, astrophysical cuts are also applied. These restrict temperature, luminosity, standard spectral classes, and colour indices strictly to realistic physical bounds.
 
-- Univariate outlier removal
+- Univariate outlier removal \\
     This method involves detecting, and then removing, outlier readings with large amounts of error via iterative detection of univariate outliers through the IQR method.
     
-- Multivariate outlier removal
+- Multivariate outlier removal \\
     In this case, The MCD (Minimum Covariance Determinant) method is used to identify and remove outliers.
 ---
 
