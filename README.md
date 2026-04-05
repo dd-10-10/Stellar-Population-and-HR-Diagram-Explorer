@@ -167,3 +167,5 @@ The dashboard consists of two pages:
 ## Acknowledgements
 
 This work has made use of data from the European Space Agency (ESA) mission **[Gaia](https://www.cosmos.esa.int/gaia)**, processed by the Gaia Data Processing and Analysis Consortium (**[DPAC](https://www.cosmos.esa.int/web/gaia/dpac/consortium)**).
+
+This project has also made use of the **[CMD Web Interface](https://stev.oapd.inaf.it/cgi-bin/cmd)** to obtain data for plotting the reference isochrones.
