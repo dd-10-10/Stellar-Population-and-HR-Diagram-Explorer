@@ -179,9 +179,9 @@ if __name__== "__main__":
         iso_df= iso_df.sort_values(by= "Mini")
         iso_df2= iso_df2.sort_values(by= "Mini")
         t = np.linspace(0, 1, 100)
-        
+
         # AI used to help with generating dummy data for the reference lines, since these stars seemed 
-        # to be underrepresented in the source for the reference data (PARSEC)
+        # to be underrepresented in the source for the reference data (CMD web interface, also found through AI)
         # Dummy Young White Dwarfs (Slightly hotter/brighter)
         y_wd = pd.DataFrame({"Color index": np.linspace(-0.2, 0.6, 100),
                             "Absolute magnitude": 10 + 5.5 * t - 1.5 * (t - t**2),
