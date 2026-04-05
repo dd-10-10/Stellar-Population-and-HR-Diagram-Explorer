@@ -11,10 +11,10 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
     '''
     Function to generate the diagram and dashboard from data
     '''
-    st.markdown("""<style>.block-container {padding-top: 2rem !important;}</style>""",unsafe_allow_html=True)
+    st.markdown("""<style>.block-container {padding-top: 2rem !important;}</style>""",unsafe_allow_html=True) # AI used to help with CSS/HTMl customisation
     st.set_page_config(layout="wide")
 
-    st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Hertzsprung-Russell Diagram Explorer</h1>", unsafe_allow_html=True) # AI used to help with CSS/HTMl customisation
 
     #----Data for plotting Main sequence----
     y_dwarfs= iso_df[iso_df["label"]== 1]
@@ -128,6 +128,7 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
         fig= px.scatter(df, x=x_ax, y=y_ax, color= clr_ax, color_continuous_scale= clr_scl+"_r", range_color=[-0.5, 2], render_mode="webgl")
         fig.update_traces(marker={'size': 1})
         
+        # Use of Scattergl instead of Scatter suggested by AI for speeding up load times
         fig.add_trace(go.Scattergl(x= y_dwarfs[x_ax], y= y_dwarfs[y_ax], mode= "lines", name= "Main Sequence (Young Dwarfs)",
                                    line=dict(color= 'purple', width= 1, dash= 'solid'), hoverinfo= 'name'))
         
@@ -147,7 +148,7 @@ def dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims):
                                    line=dict(color= 'grey', width= 1, dash= 'solid'), hoverinfo= 'name'))
 
         fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                                      title=""), margin=dict(t=50))
+                                      title=""), margin=dict(t=50)) # AI used to help with fixing the legend
 
         if y_ax== "Absolute magnitude":
             fig.update_yaxes(range= [16, -10])
@@ -178,6 +179,9 @@ if __name__== "__main__":
         iso_df= iso_df.sort_values(by= "Mini")
         iso_df2= iso_df2.sort_values(by= "Mini")
         t = np.linspace(0, 1, 100)
+        
+        # AI used to help with generating dummy data for the reference lines, since these stars seemed 
+        # to be underrepresented in the source for the reference data (PARSEC)
         # Dummy Young White Dwarfs (Slightly hotter/brighter)
         y_wd = pd.DataFrame({"Color index": np.linspace(-0.2, 0.6, 100),
                             "Absolute magnitude": 10 + 5.5 * t - 1.5 * (t - t**2),
@@ -188,6 +192,7 @@ if __name__== "__main__":
                             "Absolute magnitude": 11 + 5.0 * t - 1.0 * (t - t**2),
                             "Log effective temperature": np.linspace(4.6, 3.7, 100),
                             "Log luminosity": np.linspace(-1.0, -4.0, 100)})
+        
         lims= {"Distance": (df["Distance"].min(), df["Distance"].max()),
                "Apparent G magnitude": (df["Apparent G magnitude"].min(), df["Apparent G magnitude"].max()),
                "Effective temperature": (df["Effective temperature"].min(), df["Effective temperature"].max()),
@@ -195,6 +200,7 @@ if __name__== "__main__":
                "Log luminosity": (df["Log luminosity"].min(), df["Log luminosity"].max()),
                "Absolute magnitude": (df["Absolute magnitude"].min(), df["Absolute magnitude"].max())}
         return iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims
+    
     st.sidebar.markdown("# HR Diagram Explorer")
     iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims= load_data()
     dashboard(iqr_df, mcd_df, phy_df, iso_df, iso_df2, y_wd, o_wd, lims)

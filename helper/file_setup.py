@@ -95,4 +95,4 @@ if __name__ == "__main__":
     df= clean_measured(df)
 
     #Saving
-    df.to_csv("/Users/sujaiy/Documents/Project_Folder/Stellar-Population-and-HR-Diagram-Explorer/data/gaia_cleaned.csv", index= False)
+    df.to_csv("data/gaia_cleaned.csv", index= False)
